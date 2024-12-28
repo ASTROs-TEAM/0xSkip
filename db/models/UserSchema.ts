@@ -8,4 +8,8 @@ const UserSchema = new mongoose.Schema({
     current_habits: [{ type: String, ref: 'Habit' }], 
     userid: { type: String, required: true, unique: true }, 
   });
+
+
+  const UserModel = mongoose.models.User || mongoose.model('User', UserSchema);
+  export default UserModel;
   

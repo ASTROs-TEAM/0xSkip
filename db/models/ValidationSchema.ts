@@ -15,3 +15,6 @@ const ValidationSchema = new mongoose.Schema({
     validation_status_bool: { type: Boolean, required: true },
   });
   
+
+  const ValidationModel = mongoose.models.Validation || mongoose.model('Validation', ValidationSchema);
+  export default ValidationModel;

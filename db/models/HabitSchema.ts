@@ -15,4 +15,8 @@ const HabitSchema = new mongoose.Schema({
     endDate: { type: Date, required: true },
     withdrawn_participants: [{ type: String, ref: 'User' }],
   });
-  
+
+
+
+const HabitModel = mongoose.models.Habit || mongoose.model('Habit', HabitSchema);
+export default HabitModel;

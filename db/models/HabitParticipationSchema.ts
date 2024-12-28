@@ -14,4 +14,8 @@ const HabitParticipationSchema = new mongoose.Schema({
     daysMissed: { type: Number, default: 0 },
     daysValidated: { type: Number, default: 0 },
   });
+
+
+  const HabitParticipationModel = mongoose.models.HabitParticipation || mongoose.model('HabitParticipation', HabitParticipationSchema);
+  export default HabitParticipationModel;
   

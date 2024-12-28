@@ -13,4 +13,8 @@ const ClaimsSchema = new mongoose.Schema({
     },
     claim_status_bool: { type: Boolean, required: true },
   });
+
+
   
+    const ClaimsModel = mongoose.models.ClaimsSchema || mongoose.model('Claims', ClaimsSchema);
+    export default ClaimsModel;
