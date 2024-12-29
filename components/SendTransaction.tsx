@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react'
-import useWallet from '../hooks/useWallet'
-import useSendTransaction from '@/hooks/useSendTransaction'
+import useWallet from '../app/hooks/useWallet'
+import useSendTransaction from '@/app/hooks/useSendTransaction'
 
 const SendETHComponent: React.FC = () => {
   const { error } = useWallet()

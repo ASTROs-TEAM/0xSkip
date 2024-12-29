@@ -1,6 +1,6 @@
 'use client'
-import useConnect from '@/hooks/useConnect'
-import useWallet from '@/hooks/useWallet'
+import useConnect from '@/app/hooks/useConnect'
+import useWallet from '@/app/hooks/useWallet'
 import { useState } from 'react'
 
 const WalletConnect: React.FC = () => {
