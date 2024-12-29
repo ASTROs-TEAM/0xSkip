@@ -10,7 +10,7 @@ const HabitSchema = new mongoose.Schema({
   participants: [{ type: String, ref: 'User' }],
   prizePool: { type: String },
   entryPrize: { type: String, required: true },
-  noOfDays: { type: Number, min: 21, required: true },
+  noOfDays: { type: Number, required: true },
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: true },
   withdrawn_participants: [{ type: String, ref: 'User' }],

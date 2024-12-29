@@ -19,7 +19,6 @@ export async function PATCH(req: NextRequest) {
         { status: 400 }
       );
     }
-
     habit.participants.push(userid)
     await habit.save()
 

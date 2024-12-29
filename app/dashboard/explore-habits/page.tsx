@@ -1,16 +1,17 @@
-"use client"
-import { Explorehabits } from '@/components/Explorehabits'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+"use client";
+import { Explorehabits } from "@/components/Explorehabits";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
-} from '@/components/ui/dialog'
-import React, { useEffect, useState } from 'react'
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const Page = () => {
   interface Habit {
@@ -19,19 +20,51 @@ const Page = () => {
     participants: Array<string>;
     entryPrize: string;
   }
-  
+
+  const [inviteCode, setInviteCode] = useState("");
   const [habits, setHabits] = useState<Habit[]>([]);
 
   useEffect(() => {
-    fetch("/api/habit")
-      .then((res) => res.json())
-      .then((data) => {
+    const fetchHabits = async () => {
+      try {
+        const res = await fetch("/api/habit");
+        const data = await res.json();
         setHabits(data.habits || []);
-      })
-      .catch((err) => console.error("Error fetching habits:", err));
+      } catch (err) {
+        console.error("Error fetching habits:", err);
+      }
+    };
+
+    fetchHabits();
   }, []);
 
-  console.log(habits);
+  const handleJoin = async () => {
+    if (!inviteCode) {
+      alert("Please enter an invite code.");
+      return;
+    }
+
+    if (inviteCode.length !== 6) {
+      alert("Invite code should be exactly 6 characters.");
+      return;
+    }
+
+    try {
+      const res = await axios.patch("/api/join-by-invite", {
+        invite_code: inviteCode,
+        userid: "123",
+      });
+      alert(res.data.message || "Successfully joined the habit.");
+      setInviteCode("");
+    } catch (err: any) {
+      console.error("Error joining habit:", err);
+      if (err.response) {
+        alert(err.response.data.message || "Failed to join habit.");
+      } else {
+        alert("An unexpected error occurred. Please try again.");
+      }
+    }
+  };
 
   return (
     <div className="flex flex-col text-white h-full overflow-y-auto py-6 px-4">
@@ -42,13 +75,16 @@ const Page = () => {
           and challenge yourself.
         </p>
       </div>
-      <div className='flex gap-2 mb-4'>
-        <Input placeholder='Search Habits' />
-        <Button>Search</Button>
+      <div className="flex flex-wrap gap-2 mb-4">
+        <Input
+          placeholder="Search Habits"
+          className="w-full sm:w-[500px]"
+        />
+        <Button className="w-full sm:w-auto">Search</Button>
 
         <Dialog>
           <DialogTrigger>
-            <Button variant={'outline'} className='border-tertiary'>
+            <Button variant="outline" className="border-tertiary w-full sm:w-auto">
               Join using Invite Code
             </Button>
           </DialogTrigger>
@@ -59,8 +95,14 @@ const Page = () => {
                 Enter the invite code to join the private habit.
               </DialogDescription>
             </DialogHeader>
-            <Input placeholder='Invite Code' />
-            <Button>Join</Button>
+            <div className="flex flex-col gap-4">
+              <Input
+                placeholder="Invite Code"
+                onChange={(e) => setInviteCode(e.target.value)}
+                value={inviteCode}
+              />
+              <Button onClick={handleJoin}>Join</Button>
+            </div>
           </DialogContent>
         </Dialog>
       </div>

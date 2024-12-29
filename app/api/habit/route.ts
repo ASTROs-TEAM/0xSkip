@@ -5,7 +5,26 @@ import { v4 as uuidv4 } from 'uuid'
 import UserModel from '@/db/models/UserSchema'
 import HabitParticipationModel from '@/db/models/HabitParticipationSchema'
 import OtpGenerator from 'otp-generator'
-import console from 'console'
+
+export async function GET(req: NextRequest) {
+  /* 
+  GET ---> all habits
+  Discover Page
+  */
+  try {
+    await connecttodb();
+    const habits = await HabitModel.find({privatehabit:false});
+    return NextResponse.json(
+      { message: "Habits retrieved", habits: habits },
+      { status: 200 }
+    );
+  } catch (err) {
+    return NextResponse.json(
+      { message: "Error retrieving habits", error: err },
+      { status: 500 }
+    );
+  }
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -13,6 +32,8 @@ export async function POST(req: NextRequest) {
 
     const data = await req.json()
     const userid=data.userid;
+    console.log(userid);
+    
     const {
       title,
       description,
@@ -74,7 +95,7 @@ export async function POST(req: NextRequest) {
     await user.save()
 
     const habitParticipant = new HabitParticipationModel({
-      userid,
+      userId:userid,
       habitId,
       join_date: new Date(startDate),
       status: 'current',
@@ -95,28 +116,6 @@ export async function POST(req: NextRequest) {
       { message: 'Error creating habit', error: err.message },
       { status: 500 }
     )
-  }
-}
-
-
-export async function GET(req: NextRequest) {
-  /* 
-  GET ---> all habits
-  Discover Page
-  */
-  try {
-    await connecttodb();
-    const habits = await HabitModel.find({privatehabit:false});
-    console.log(habits,"get habits")
-    return NextResponse.json(
-      { message: "Habits retrieved", habits: habits },
-      { status: 200 }
-    );
-  } catch (err) {
-    return NextResponse.json(
-      { message: "Error retrieving habits", error: err },
-      { status: 500 }
-    );
   }
 }
 

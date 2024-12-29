@@ -13,6 +13,7 @@ const ValidationSchema = new mongoose.Schema({
       required: true,
     },
     validation_status_bool: { type: Boolean, required: true },
+    signed : { type: Boolean, default: false}
   });
   
 
