@@ -1,18 +1,21 @@
 import React, { FC } from 'react'
-import { ArrowUpRight } from 'lucide-react'
-
 import { VariantProps, cva } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
 import personicon from '@/app/persons.svg'
 import ethereumicon from '@/app/ethereum.svg'
+import Link from 'next/link'
 
-interface ExplorehabitsProps
+interface MyHabitsCardProps
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof ExplorehabitsVariants> {}
+    VariantProps<typeof MyHabitsCardVariants> {
+  HabitTitle: string
+  HabitDesc: string
+  id: string
+}
 
-const ExplorehabitsVariants = cva(
-  'rounded-lg p-4 m-1 shadow-md transition-colors  border-[1px]  border-white/10',
+const MyHabitsCardVariants = cva(
+  'rounded-lg p-6 m-1 shadow-md transition-colors border-[1px]  border-white/10',
   {
     variants: {
       variant: {
@@ -20,7 +23,7 @@ const ExplorehabitsVariants = cva(
         outline: 'border border-gray-300 bg-white text-gray-900'
       },
       size: {
-        default: 'w-96 h-50',
+        default: 'w-full h-50',
         sm: 'w-64 h-32'
       }
     },
@@ -31,21 +34,26 @@ const ExplorehabitsVariants = cva(
   }
 )
 
-const Explorehabits: FC<ExplorehabitsProps> = ({
+const MyHabitsCard: FC<MyHabitsCardProps> = ({
   className,
   size,
   variant,
+  HabitTitle,
+  HabitDesc,
+  id,
   ...props
 }) => {
   return (
     <div
-      className={cn(ExplorehabitsVariants({ variant, size, className }))}
+      className={cn(MyHabitsCardVariants({ variant, size, className }))}
       {...props}
     >
-      <h2 className='text-xl font-bold mb-2'>Learn Java</h2>
-      <p className='text-sm text-foreground/60 pl-1'>
-        Learn Java within 30 days. Java is used to develop mobile apps, web
-        apps, desktop apps, games, and much more.
+      <h2 className='text-xl font-bold mb-2'>{HabitTitle}</h2>
+      <p className='text-sm text-gray-300'>
+        {HabitDesc &&
+          (HabitDesc.length > 100
+            ? HabitDesc.slice(0, 100) + '...'
+            : HabitDesc)}
       </p>
       <div className='flex items-center justify-between mt-3'>
         <div className='flex items-center gap-2 text-gray-400'>
@@ -63,13 +71,15 @@ const Explorehabits: FC<ExplorehabitsProps> = ({
             2
           </span>
         </div>
-        <button className='text-sm hover:underline hover:text-tertiary  bg-transparent p-2 rounded-md flex items-center'>
+        <Link
+          href={`/dashboard/my-habits/${id}`}
+          className='text-sm hover:underline bg-[#2e2e31] p-2 rounded-md'
+        >
           More info
-          <ArrowUpRight className='text-tertiary' size={'20px'} />
-        </button>
+        </Link>
       </div>
     </div>
   )
 }
 
-export { Explorehabits, ExplorehabitsVariants }
+export { MyHabitsCard, MyHabitsCardVariants }

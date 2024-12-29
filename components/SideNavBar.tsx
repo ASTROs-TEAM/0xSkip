@@ -1,23 +1,38 @@
+'use client'
+
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import React from 'react'
 
 const SideNavBar = () => {
+  const pathname = usePathname()
+
   return (
-    <div className='flex flex-col w-full h-full bg-gray-900 text-white'>
-      <ul className='flex-1 space-y-4  p-4'>
-        {['Dashboard', 'Send Transaction', 'Wallet Connect'].map(
-          (item, index) => (
-            <li
-              key={index}
-              className='bg-gray-800 p-4 rounded-md text-center cursor-pointer '
-            >
-              {item}
-            </li>
-          )
+    <div className='sticky left-0 top-20 flex flex-col w-full h-[90vh] border-r-[1px] border-white/10 text-white'>
+      <div className='flex-1 flex flex-col  space-y-4  p-4'>
+        {['My Habits', 'Explore Habits', 'My Claims', 'Create New Habit'].map(
+          (item, index) => {
+            const isActive =
+              pathname ===
+              `/dashboard/${item.toLowerCase().split(' ').join('-')}`
+            return (
+              <Link
+                key={index}
+                href={`/dashboard/${item.toLowerCase().split(' ').join('-')}`}
+                className={`${
+                  isActive && 'bg-black/60 text-tertiary'
+                } p-4 rounded-md text-center cursor-pointer `}
+              >
+                {item}
+              </Link>
+            )
+          }
         )}
-      </ul>
+      </div>
 
       <div className='p-4 border-t border-gray-700'>
         <p className='text-sm text-gray-400'>Hello, User</p>
+        <button>Logout</button>
       </div>
     </div>
   )

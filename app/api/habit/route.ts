@@ -2,7 +2,12 @@ import connecttodb from "@/db/db";
 import { NextRequest, NextResponse } from "next/server";
 import HabitModel from "@/db/models/HabitSchema";
 
+
 export async function GET(req: NextRequest) {
+  /* 
+  GET ---> all habits
+  Discover Page
+  */
   try {
     await connecttodb();
     const habits = await HabitModel.find();
