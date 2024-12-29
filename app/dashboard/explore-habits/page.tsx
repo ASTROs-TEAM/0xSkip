@@ -1,5 +1,15 @@
 "use client"
 import { Explorehabits } from '@/components/Explorehabits'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
 import React, { useEffect, useState } from 'react'
 
 const Page = () => {
@@ -32,8 +42,27 @@ const Page = () => {
           and challenge yourself.
         </p>
       </div>
-      <div>
-        <h1>Search Habits</h1>
+      <div className='flex gap-2 mb-4'>
+        <Input placeholder='Search Habits' />
+        <Button>Search</Button>
+
+        <Dialog>
+          <DialogTrigger>
+            <Button variant={'outline'} className='border-tertiary'>
+              Join using Invite Code
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Join Private Habit</DialogTitle>
+              <DialogDescription>
+                Enter the invite code to join the private habit.
+              </DialogDescription>
+            </DialogHeader>
+            <Input placeholder='Invite Code' />
+            <Button>Join</Button>
+          </DialogContent>
+        </Dialog>
       </div>
       <div className="flex flex-wrap gap-2">
         {habits.length > 0 ? (
