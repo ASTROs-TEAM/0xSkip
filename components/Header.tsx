@@ -1,10 +1,19 @@
-import Image from 'next/image'
+'use client'
 import React from 'react'
 import { Moon } from 'lucide-react'
 import Link from 'next/link'
 import WalletConnect from './WalletConnect'
+import { Button } from './ui/button'
+import { signIn } from 'next-auth/react'
+import { redirect, useRouter } from 'next/navigation'
 
 const Header = ({ dashboard }: { dashboard?: boolean }) => {
+  const router = useRouter()
+
+  const handleSignIn = async () => {
+    await signIn('google', { redirectTo: '/dashboard/my-habits' })
+  }
+
   return (
     <nav className='sticky left-0 top-0  w-full h-16 flex items-center justify-between py-10 z-10 bg-background'>
       <div>
@@ -31,6 +40,7 @@ const Header = ({ dashboard }: { dashboard?: boolean }) => {
           <Moon size={24} className='text-tertiary' />
         </div>
         {dashboard && <WalletConnect />}
+        {!dashboard && <Button onClick={() => handleSignIn()}>Sign In</Button>}
       </div>
     </nav>
   )

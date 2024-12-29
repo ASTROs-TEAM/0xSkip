@@ -24,6 +24,7 @@
     "lucide-react": "^0.469.0",
     "mongoose": "^8.9.2",
     "next": "15.1.3",
+    "next-auth": "^5.0.0-beta.25",
     "otp-generator": "^4.0.1",
     "react": "^19.0.0",
     "react-calendar": "^5.1.0",
