@@ -3,9 +3,12 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React from 'react'
+import { Button } from './ui/button'
+import { signOut, useSession } from 'next-auth/react'
 
 const SideNavBar = () => {
   const pathname = usePathname()
+  const { data: session } = useSession()
 
   return (
     <div className='sticky left-0 top-20 flex flex-col w-full h-[90vh] border-r-[1px] border-white/10 text-white'>
@@ -16,7 +19,7 @@ const SideNavBar = () => {
               pathname ===
               `/dashboard/${item.toLowerCase().split(' ').join('-')}`
             return (
-              <Link 
+              <Link
                 key={index}
                 href={`/dashboard/${item.toLowerCase().split(' ').join('-')}`}
                 className={`${
@@ -30,9 +33,16 @@ const SideNavBar = () => {
         )}
       </div>
 
-      <div className='p-4 border-t border-gray-700'>
-        <p className='text-sm text-gray-400'>Hello, User</p>
-        <button>Logout</button>
+      <div className='p-4 border-t border-gray-700 w-full'>
+        <p className='text-xl text-foreground/80 mb-4 font-bricolage'>
+          Hello,{' '}
+          <span className='text-tertiary text-2xl font-semibold '>
+            {session?.user?.name}
+          </span>
+        </p>
+        <Button className='w-full' onClick={() => signOut({ redirectTo: '/' })}>
+          Logout
+        </Button>
       </div>
     </div>
   )
