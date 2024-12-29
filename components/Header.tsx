@@ -4,11 +4,12 @@ import { Moon } from 'lucide-react'
 import Link from 'next/link'
 import WalletConnect from './WalletConnect'
 import { Button } from './ui/button'
-import { signIn } from 'next-auth/react'
+import { signIn, signOut, useSession } from 'next-auth/react'
 import { redirect, useRouter } from 'next/navigation'
 
 const Header = ({ dashboard }: { dashboard?: boolean }) => {
   const router = useRouter()
+  const { data: session } = useSession()
 
   const handleSignIn = async () => {
     await signIn('google', { redirectTo: '/dashboard/my-habits' })
@@ -40,7 +41,23 @@ const Header = ({ dashboard }: { dashboard?: boolean }) => {
           <Moon size={24} className='text-tertiary' />
         </div>
         {dashboard && <WalletConnect />}
-        {!dashboard && <Button onClick={() => handleSignIn()}>Sign In</Button>}
+        {!session ? (
+          <Button onClick={() => handleSignIn()}>Sign In</Button>
+        ) : (
+          !dashboard && (
+            <>
+              <Button onClick={() => redirect('/dashboard/my-habits')}>
+                Dashboard
+              </Button>
+              <Button
+                variant={'outline'}
+                onClick={() => signOut({ redirectTo: '/' })}
+              >
+                Logout
+              </Button>
+            </>
+          )
+        )}
       </div>
     </nav>
   )

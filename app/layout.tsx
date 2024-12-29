@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Bricolage_Grotesque, Inter } from 'next/font/google'
 import './globals.css'
+import { SessionProvider } from 'next-auth/react'
 
 const inter = Inter({
   variable: '--font-inter',
@@ -28,7 +29,7 @@ export default function RootLayout({
       <body
         className={`${inter.className} ${bricolage.variable} antialiased dark mx-48`}
       >
-        {children}
+        <SessionProvider>{children}</SessionProvider>
       </body>
     </html>
   )
