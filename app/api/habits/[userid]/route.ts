@@ -1,84 +1,103 @@
-import connecttodb from "@/db/db";
-import { NextRequest, NextResponse } from "next/server";
-import HabitModel from "@/db/models/HabitSchema";
-import { v4 } from "uuid";
-import UserModel from "@/db/models/UserSchema";
-import HabitParticipationModel from "@/db/models/HabitParticipationSchema";
-
+import connecttodb from '@/db/db'
+import { NextRequest, NextResponse } from 'next/server'
+import HabitModel from '@/db/models/HabitSchema'
+import { v4 as uuidv4 } from 'uuid'
+import UserModel from '@/db/models/UserSchema'
+import HabitParticipationModel from '@/db/models/HabitParticipationSchema'
+import OtpGenerator from 'otp-generator'
+import console from 'console'
 
 export async function POST(req: NextRequest) {
-    /*
-    this api is to add new habit
-    userid from params
-    body includes title,description,prizePool,entryPrize,startDate,noOfDays
-    updates currenthabit field in usermodel by pushing habitid 
-    also add new habitparticipationmodel
-    */
-    try {
-      await connecttodb();
-  
-      const pathParts = req.nextUrl.pathname.split('/');
-      const userid = pathParts[pathParts.length - 1];
-  
-      const data = await req.json();
-      const { title, description, prizePool, entryPrize, startDate, noOfDays,maxparticipants } = data;
-      if (!title || !startDate || !noOfDays || !entryPrize || !prizePool || maxparticipants) {
-        return NextResponse.json(
-          { message: "Missing required fields" },
-          { status: 400 }
-        );
-      }
-  
-      const habitid = v4();
-      const endDate = new Date(startDate);
-      endDate.setDate(endDate.getDate() + noOfDays);
-  
-      const habit = new HabitModel({
-        habitid,
-        title,
-        description,
-        creator: userid,
-        participants: [userid],
-        prizePool,
-        entryPrize,
-        startDate,
-        noOfDays,
-        endDate,
-        maxparticipants,
-      });
-  
-      const user = await UserModel.findOne({ userid });
-      if (!user) {
-        console.log("User Not Found:", userid);
-        return NextResponse.json(
-          { message: "User not found" },
-          { status: 404 }
-        );
-      }
-  
-      user.current_habits.push(habitid);
-      await user.save();
-  
-      const habitParticipant = new HabitParticipationModel({
-        userId: userid,
-        habitId: habitid,
-        join_date: new Date(startDate),
-        status: "current",
-        totalDays: noOfDays,
-      });
-      await habitParticipant.save();
-      await habit.save();
-  
-      console.log("Habit Created Successfully:", habitid);
+  try {
+    await connecttodb()
+
+    const pathParts = req.nextUrl.pathname.split('/')
+    const userId = pathParts[pathParts.length - 1]
+    const data = await req.json()
+
+    const {
+      title,
+      description,
+      prizePool,
+      entryPrize,
+      startDate,
+      noOfDays,
+      maxpartipants,
+      privatehabit
+    } = data
+
+    if (!title || !startDate || !noOfDays || !entryPrize || !prizePool) {
       return NextResponse.json(
-        { message: "Habit created successfully" },
-        { status: 201 }
-      );
-    } catch (err) {
-      console.error("Error Creating Habit:", err);
-      return NextResponse.json(
-        { message: "Error creating habit", error: err },
-        { status: 500 }
-      );
+        { message: 'Missing required fields' },
+        { status: 400 }
+      )
     }
+
+    const habitId = uuidv4()
+    const endDate = new Date(startDate)
+    endDate.setDate(endDate.getDate() + noOfDays)
+
+    const baseHabitData = {
+      habitid: habitId,
+      title,
+      description,
+      creator: userId,
+      participants: [userId],
+      prizePool,
+      entryPrize,
+      startDate,
+      noOfDays,
+      endDate,
+      maxpartipants,
+      privatehabit
+    }
+
+    let inviteCodeGenerated = OtpGenerator.generate(6, {
+      upperCaseAlphabets: false,
+      lowerCaseAlphabets: false,
+      specialChars: false
+    })
+
+    console.log('inviteCodeGenerated:', inviteCodeGenerated)
+    const habit = new HabitModel(
+      privatehabit
+        ? {
+            ...baseHabitData,
+            invite_code: inviteCodeGenerated
+          }
+        : baseHabitData
+    )
+
+    const user = await UserModel.findOne({ userid: userId })
+    if (!user) {
+      console.log('User Not Found:', userId)
+      return NextResponse.json({ message: 'User not found' }, { status: 404 })
+    }
+
+    user.current_habits.push(habitId)
+    await user.save()
+
+    const habitParticipant = new HabitParticipationModel({
+      userId,
+      habitId,
+      join_date: new Date(startDate),
+      status: 'current',
+      totalDays: noOfDays
+    })
+
+    await habit.save()
+    await habitParticipant.save()
+
+    console.log('Habit Created Successfully:', habitId)
+    return NextResponse.json(
+      { message: 'Habit created successfully', habitId, habit },
+      { status: 201 }
+    )
+  } catch (err: any) {
+    console.log('Error Creating Habit:', err)
+    return NextResponse.json(
+      { message: 'Error creating habit', error: err.message },
+      { status: 500 }
+    )
   }
+}
