@@ -1,4 +1,6 @@
 import React, { FC } from 'react'
+import { ArrowUpRight } from 'lucide-react'
+
 import { VariantProps, cva } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
@@ -10,11 +12,11 @@ interface ExplorehabitsProps
     VariantProps<typeof ExplorehabitsVariants> {}
 
 const ExplorehabitsVariants = cva(
-  'rounded-lg p-6 m-1 shadow-md transition-colors',
+  'rounded-lg p-4 m-1 shadow-md transition-colors  border-[1px]  border-white/10',
   {
     variants: {
       variant: {
-        default: 'bg-gray-800 text-white',
+        default: 'bg-background text-white',
         outline: 'border border-gray-300 bg-white text-gray-900'
       },
       size: {
@@ -41,7 +43,7 @@ const Explorehabits: FC<ExplorehabitsProps> = ({
       {...props}
     >
       <h2 className='text-xl font-bold mb-2'>Learn Java</h2>
-      <p className='text-sm text-gray-300'>
+      <p className='text-sm text-foreground/60 pl-1'>
         Learn Java within 30 days. Java is used to develop mobile apps, web
         apps, desktop apps, games, and much more.
       </p>
@@ -61,8 +63,9 @@ const Explorehabits: FC<ExplorehabitsProps> = ({
             2
           </span>
         </div>
-        <button className='text-sm hover:underline bg-[#474E93] p-2 rounded-md'>
+        <button className='text-sm hover:underline hover:text-tertiary  bg-transparent p-2 rounded-md flex items-center'>
           More info
+          <ArrowUpRight className='text-tertiary' size={'20px'} />
         </button>
       </div>
     </div>

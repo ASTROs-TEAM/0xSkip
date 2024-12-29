@@ -20,7 +20,7 @@ const SideNavBar = () => {
                 key={index}
                 href={`/dashboard/${item.toLowerCase().split(' ').join('-')}`}
                 className={`${
-                  isActive && 'bg-gray-800'
+                  isActive && 'bg-black/60 text-tertiary'
                 } p-4 rounded-md text-center cursor-pointer `}
               >
                 {item}

@@ -5,9 +5,9 @@ import React from 'react'
 const page = () => {
   return (
     <div className='flex flex-col  text-white h-full overflow-y-auto py-6 px-4'>
-      <div className='my-1'>
-        <h1 className='text-4xl font-bold'>Explore Habits</h1>
-        <p className='text-gray-300'>
+      <div className='mb-4 text-foreground/80'>
+        <h1 className='text-4xl font-bold pl-1'>Explore Habits</h1>
+        <p className='text-foreground/60 pl-2'>
           Explore habits to learn and grow. You can also create your own habits
           and challenge yourself.
         </p>
