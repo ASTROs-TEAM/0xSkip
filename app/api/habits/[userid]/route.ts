@@ -1,56 +1,103 @@
-import HabitSchema from "@/db/models/HabitSchema";
-import { v4 } from "uuid";
-import connecttodb from "@/db/db";
-import { NextRequest, NextResponse } from "next/server";
-import UserModel from "@/db/models/UserSchema";
-import HabitModel from "@/db/models/HabitSchema";
-import HabitParticipationModel from "@/db/models/HabitParticipationSchema";
+import connecttodb from '@/db/db'
+import { NextRequest, NextResponse } from 'next/server'
+import HabitModel from '@/db/models/HabitSchema'
+import { v4 as uuidv4 } from 'uuid'
+import UserModel from '@/db/models/UserSchema'
+import HabitParticipationModel from '@/db/models/HabitParticipationSchema'
+import OtpGenerator from 'otp-generator'
+import console from 'console'
 
 export async function POST(req: NextRequest) {
   try {
-    await connecttodb();
+    await connecttodb()
 
-    const pathParts = req.nextUrl.pathname.split('/');
-    const userid = pathParts[pathParts.length - 1];
+    const pathParts = req.nextUrl.pathname.split('/')
+    const userId = pathParts[pathParts.length - 1]
+    const data = await req.json()
 
-    const data = await req.json();
-    const habit= await HabitModel.findOne({habitid:data.habitid});
+    const {
+      title,
+      description,
+      prizePool,
+      entryPrize,
+      startDate,
+      noOfDays,
+      maxpartipants,
+      privatehabit
+    } = data
 
-    habit.participants.push(userid);
-
-    
-
-    const user = await UserModel.findOne({ userid });
-    if (!user) {
-      console.log("User Not Found:", userid);
+    if (!title || !startDate || !noOfDays || !entryPrize || !prizePool) {
       return NextResponse.json(
-        { message: "User not found" },
-        { status: 404 }
-      );
+        { message: 'Missing required fields' },
+        { status: 400 }
+      )
     }
 
-    user.current_habits.push(data.habitid);
-    await user.save();
+    const habitId = uuidv4()
+    const endDate = new Date(startDate)
+    endDate.setDate(endDate.getDate() + noOfDays)
+
+    const baseHabitData = {
+      habitid: habitId,
+      title,
+      description,
+      creator: userId,
+      participants: [userId],
+      prizePool,
+      entryPrize,
+      startDate,
+      noOfDays,
+      endDate,
+      maxpartipants,
+      privatehabit
+    }
+
+    let inviteCodeGenerated = OtpGenerator.generate(6, {
+      upperCaseAlphabets: false,
+      lowerCaseAlphabets: false,
+      specialChars: false
+    })
+
+    console.log('inviteCodeGenerated:', inviteCodeGenerated)
+    const habit = new HabitModel(
+      privatehabit
+        ? {
+            ...baseHabitData,
+            invite_code: inviteCodeGenerated
+          }
+        : baseHabitData
+    )
+
+    const user = await UserModel.findOne({ userid: userId })
+    if (!user) {
+      console.log('User Not Found:', userId)
+      return NextResponse.json({ message: 'User not found' }, { status: 404 })
+    }
+
+    user.current_habits.push(habitId)
+    await user.save()
 
     const habitParticipant = new HabitParticipationModel({
-      userId: userid,
-      habitId: data.habitid,
-      join_date: new Date(habit.startDate || Date.now()),
-      status: "current",
-      totalDays: habit.noOfDays,
-    });
-    await habitParticipant.save();
-    await habit.save();
-    console.log("Habit Created Successfully:",);
+      userId,
+      habitId,
+      join_date: new Date(startDate),
+      status: 'current',
+      totalDays: noOfDays
+    })
+
+    await habit.save()
+    await habitParticipant.save()
+
+    console.log('Habit Created Successfully:', habitId)
     return NextResponse.json(
-      { message: "Habit created successfully",  },
+      { message: 'Habit created successfully', habitId, habit },
       { status: 201 }
-    );
-  } catch (err) {
-    console.error("Error Creating Habit:", err);
+    )
+  } catch (err: any) {
+    console.log('Error Creating Habit:', err)
     return NextResponse.json(
-      { message: "Error creating habit", error: err },
+      { message: 'Error creating habit', error: err.message },
       { status: 500 }
-    );
+    )
   }
 }
