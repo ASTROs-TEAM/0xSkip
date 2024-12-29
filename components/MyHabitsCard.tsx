@@ -5,6 +5,7 @@ import Image from 'next/image'
 import personicon from '@/app/persons.svg'
 import ethereumicon from '@/app/ethereum.svg'
 import Link from 'next/link'
+import { ArrowUpRight, Lock } from 'lucide-react'
 
 interface MyHabitsCardProps
   extends React.HTMLAttributes<HTMLDivElement>,
@@ -12,6 +13,7 @@ interface MyHabitsCardProps
   HabitTitle: string
   HabitDesc: string
   id: string
+  privateHabit?: boolean
 }
 
 const MyHabitsCardVariants = cva(
@@ -41,6 +43,7 @@ const MyHabitsCard: FC<MyHabitsCardProps> = ({
   HabitTitle,
   HabitDesc,
   id,
+  privateHabit,
   ...props
 }) => {
   return (
@@ -48,7 +51,11 @@ const MyHabitsCard: FC<MyHabitsCardProps> = ({
       className={cn(MyHabitsCardVariants({ variant, size, className }))}
       {...props}
     >
-      <h2 className='text-xl font-bold mb-2'>{HabitTitle}</h2>
+      <div className='flex gap-1 items-baseline justify-between'>
+        <h2 className='text-xl  font-bold mb-2'>{HabitTitle}</h2>
+        {privateHabit && <Lock className='h-4 w-4 text-amber-500' />}
+      </div>
+
       <p className='text-sm text-gray-300'>
         {HabitDesc &&
           (HabitDesc.length > 100
@@ -73,9 +80,10 @@ const MyHabitsCard: FC<MyHabitsCardProps> = ({
         </div>
         <Link
           href={`/dashboard/my-habits/${id}`}
-          className='text-sm hover:underline bg-[#2e2e31] p-2 rounded-md'
+          className='text-md hover:underline hover:text-tertiary  bg-transparent p-2 rounded-md flex items-center'
         >
           More info
+          <ArrowUpRight className='text-tertiary' size={'20px'} />
         </Link>
       </div>
     </div>
