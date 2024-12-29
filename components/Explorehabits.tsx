@@ -1,24 +1,30 @@
 import React, { FC } from "react";
+import { ArrowUpRight } from "lucide-react";
 import { VariantProps, cva } from "class-variance-authority";
-import { cn } from "@/lib/utils"; 
+import { cn } from "@/lib/utils";
 import Image from "next/image";
-import personicon from "@/app/persons.svg"
-import ethereumicon from "@/app/ethereum.svg"
+import personicon from "@/app/persons.svg";
+import ethereumicon from "@/app/ethereum.svg";
 
 interface ExplorehabitsProps
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof ExplorehabitsVariants> {}
+    VariantProps<typeof ExplorehabitsVariants> {
+  title: string;
+  description: string;
+  participants: number;
+  entryPrize: string;
+}
 
 const ExplorehabitsVariants = cva(
-  "rounded-lg p-6 shadow-md transition-colors", 
+  "rounded-lg p-4 m-1 shadow-md transition-colors border-[1px] border-white/10",
   {
     variants: {
       variant: {
-        default: "bg-gray-800 text-white",
+        default: "bg-background text-white",
         outline: "border border-gray-300 bg-white text-gray-900",
       },
       size: {
-        default: "w-80 h-50", 
+        default: "w-96 h-50",
         sm: "w-64 h-32",
       },
     },
@@ -33,6 +39,10 @@ const Explorehabits: FC<ExplorehabitsProps> = ({
   className,
   size,
   variant,
+  title,
+  description,
+  participants,
+  entryPrize,
   ...props
 }) => {
   return (
@@ -40,23 +50,28 @@ const Explorehabits: FC<ExplorehabitsProps> = ({
       className={cn(ExplorehabitsVariants({ variant, size, className }))}
       {...props}
     >
-      <h2 className="text-xl font-bold mb-2">Learn Java</h2>
-      <p className="text-sm text-gray-300">
-        Learn Java within 30 days. Java is used to develop mobile apps, web
-        apps, desktop apps, games, and much more.
-      </p>
+      <h2 className="text-xl font-bold mb-2">{title}</h2>
+      <p className="text-sm text-foreground/60 pl-1">{description}</p>
       <div className="flex items-center justify-between mt-3">
         <div className="flex items-center gap-2 text-gray-400">
           <span className="flex items-center gap-1">
             <Image src={personicon} alt="person icon" width={16} height={16} />
-            20
+            {participants}
           </span>
           <span className="flex items-center gap-1">
-            <Image src={ethereumicon} alt="person icon" width={16} height={16} />
-            2
+            <Image
+              src={ethereumicon}
+              alt="ethereum icon"
+              width={16}
+              height={16}
+            />
+            {entryPrize}
           </span>
         </div>
-        <button className="text-sm hover:underline bg-[#474E93] p-2 rounded-md">More info</button>
+        <button className="text-sm hover:underline hover:text-tertiary bg-transparent p-2 rounded-md flex items-center">
+          More info
+          <ArrowUpRight className="text-tertiary" size="20px" />
+        </button>
       </div>
     </div>
   );

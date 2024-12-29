@@ -4,7 +4,7 @@ import { Moon } from 'lucide-react'
 
 const Header = ({ dashboard }: { dashboard?: boolean }) => {
   return (
-    <nav className='w-full h-16 flex items-center justify-between py-10'>
+    <nav className='sticky left-0 top-0  w-full h-16 flex items-center justify-between py-10 z-10 bg-background'>
       <div>
         <svg
           width='100'
@@ -23,7 +23,7 @@ const Header = ({ dashboard }: { dashboard?: boolean }) => {
           />
         </svg>
       </div>
-      <div className='flex gap-2 items-center'>
+      <div className='flex gap-1 items-center'>
         <div>
           <Moon size={24} className='text-tertiary' />
         </div>

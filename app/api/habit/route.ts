@@ -1,0 +1,27 @@
+import connecttodb from "@/db/db";
+import { NextRequest, NextResponse } from "next/server";
+import HabitModel from "@/db/models/HabitSchema";
+import { v4 } from "uuid";
+
+
+
+export async function GET(req: NextRequest) {
+  /* 
+  GET ---> all habits
+  Discover Page
+  */
+  try {
+    await connecttodb();
+    const habits = await HabitModel.find();
+    return NextResponse.json(
+      { message: "Habits retrieved", habits: habits },
+      { status: 200 }
+    );
+  } catch (err) {
+    return NextResponse.json(
+      { message: "Error retrieving habits", error: err },
+      { status: 500 }
+    );
+  }
+}
+
