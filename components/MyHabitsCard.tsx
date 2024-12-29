@@ -5,20 +5,20 @@ import Image from 'next/image'
 import personicon from '@/app/persons.svg'
 import ethereumicon from '@/app/ethereum.svg'
 
-interface ExplorehabitsProps
+interface MyHabitsCardProps
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof ExplorehabitsVariants> {}
+    VariantProps<typeof MyHabitsCardVariants> {}
 
-const ExplorehabitsVariants = cva(
+const MyHabitsCardVariants = cva(
   'rounded-lg p-6 m-1 shadow-md transition-colors',
   {
     variants: {
       variant: {
-        default: 'bg-gray-800 text-white',
+        default: 'bg-red-800 text-white',
         outline: 'border border-gray-300 bg-white text-gray-900'
       },
       size: {
-        default: 'w-96 h-50',
+        default: 'w-full h-50',
         sm: 'w-64 h-32'
       }
     },
@@ -29,7 +29,7 @@ const ExplorehabitsVariants = cva(
   }
 )
 
-const Explorehabits: FC<ExplorehabitsProps> = ({
+const MyHabitsCard: FC<MyHabitsCardProps> = ({
   className,
   size,
   variant,
@@ -37,7 +37,7 @@ const Explorehabits: FC<ExplorehabitsProps> = ({
 }) => {
   return (
     <div
-      className={cn(ExplorehabitsVariants({ variant, size, className }))}
+      className={cn(MyHabitsCardVariants({ variant, size, className }))}
       {...props}
     >
       <h2 className='text-xl font-bold mb-2'>Learn Java</h2>
@@ -69,4 +69,4 @@ const Explorehabits: FC<ExplorehabitsProps> = ({
   )
 }
 
-export { Explorehabits, ExplorehabitsVariants }
+export { MyHabitsCard, MyHabitsCardVariants }

@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body
-        className={`${inter.className} ${bricolage.variable} antialiased dark mx-60`}
+        className={`${inter.className} ${bricolage.variable} antialiased dark mx-48`}
       >
         {children}
       </body>
