@@ -4,17 +4,22 @@ import { cn } from '@/lib/utils'
 import Image from 'next/image'
 import personicon from '@/app/persons.svg'
 import ethereumicon from '@/app/ethereum.svg'
+import Link from 'next/link'
 
 interface MyHabitsCardProps
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof MyHabitsCardVariants> {}
+    VariantProps<typeof MyHabitsCardVariants> {
+  HabitTitle: string
+  HabitDesc: string
+  id: string
+}
 
 const MyHabitsCardVariants = cva(
-  'rounded-lg p-6 m-1 shadow-md transition-colors',
+  'rounded-lg p-6 m-1 shadow-md transition-colors border-[1px]  border-white/10',
   {
     variants: {
       variant: {
-        default: 'bg-red-800 text-white',
+        default: 'bg-background text-white',
         outline: 'border border-gray-300 bg-white text-gray-900'
       },
       size: {
@@ -33,6 +38,9 @@ const MyHabitsCard: FC<MyHabitsCardProps> = ({
   className,
   size,
   variant,
+  HabitTitle,
+  HabitDesc,
+  id,
   ...props
 }) => {
   return (
@@ -40,10 +48,12 @@ const MyHabitsCard: FC<MyHabitsCardProps> = ({
       className={cn(MyHabitsCardVariants({ variant, size, className }))}
       {...props}
     >
-      <h2 className='text-xl font-bold mb-2'>Learn Java</h2>
+      <h2 className='text-xl font-bold mb-2'>{HabitTitle}</h2>
       <p className='text-sm text-gray-300'>
-        Learn Java within 30 days. Java is used to develop mobile apps, web
-        apps, desktop apps, games, and much more.
+        {HabitDesc &&
+          (HabitDesc.length > 100
+            ? HabitDesc.slice(0, 100) + '...'
+            : HabitDesc)}
       </p>
       <div className='flex items-center justify-between mt-3'>
         <div className='flex items-center gap-2 text-gray-400'>
@@ -61,9 +71,12 @@ const MyHabitsCard: FC<MyHabitsCardProps> = ({
             2
           </span>
         </div>
-        <button className='text-sm hover:underline bg-[#474E93] p-2 rounded-md'>
+        <Link
+          href={`/dashboard/my-habits/${id}`}
+          className='text-sm hover:underline bg-[#2e2e31] p-2 rounded-md'
+        >
           More info
-        </button>
+        </Link>
       </div>
     </div>
   )
