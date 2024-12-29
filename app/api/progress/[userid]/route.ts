@@ -6,12 +6,10 @@ export async function POST(req: NextRequest) {
   try {
     await connecttodb();
     const data = await req.json();
-    const pathParts = req.nextUrl.pathname.split('/');
-    const userid = pathParts[pathParts.length - 1];
 
     const validate = new ValidationModel({
       habitid:data.habitid,
-      userid: userid,
+      userid: data.userid,
       progress: data.progress,
       date_of_validation: new Date(),
       proof_imgs: data.proof_imgs,

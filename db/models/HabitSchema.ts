@@ -8,7 +8,7 @@ const HabitSchema = new mongoose.Schema({
   canUpdate: { type: Boolean, default: true },
   updateRemaining: { type: Number, default: 2 },
   participants: [{ type: String, ref: 'User' }],
-  prizePool: { type: String, required: true },
+  prizePool: { type: String },
   entryPrize: { type: String, required: true },
   noOfDays: { type: Number, min: 21, required: true },
   startDate: { type: Date, required: true },

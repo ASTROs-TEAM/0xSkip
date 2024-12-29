@@ -13,6 +13,12 @@ export async function PATCH(req: NextRequest) {
     if (!habit) {
       return NextResponse.json({ message: 'Habit not found' }, { status: 404 })
     }
+    if (habit.participants.includes(userid)) {
+      return NextResponse.json(
+        { message: "User is already a participant in this habit" },
+        { status: 400 }
+      );
+    }
 
     habit.participants.push(userid)
     await habit.save()
@@ -21,6 +27,7 @@ export async function PATCH(req: NextRequest) {
     if (!user) {
       return NextResponse.json({ message: 'User not found' }, { status: 404 })
     }
+   
     user.current_habits.push(habit.habitid)
     await user.save()
 

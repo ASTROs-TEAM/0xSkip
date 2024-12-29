@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
   try {
     await connecttodb();
     const pathParts = req.nextUrl.pathname.split('/');
-        const habitid = pathParts[pathParts.length - 1];
+    const habitid = pathParts[pathParts.length - 1];
     const habit = await HabitModel.findOne({ habitid: habitid });
     if (habit) {
       return NextResponse.json(
@@ -35,11 +35,9 @@ export async function PATCH(req: NextRequest) {
   */
   try {
     await connecttodb();
-    const pathParts = req.nextUrl.pathname.split('/');
-        const habitid = pathParts[pathParts.length - 1];
 
     const data = await req.json();
-    const { userid, title, description } = data;
+    const { userid, title, description,habitid } = data;
 
     const habit = await HabitModel.findOne({ habitid});
     
