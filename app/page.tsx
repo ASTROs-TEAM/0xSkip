@@ -5,7 +5,11 @@ export default function Home() {
   return (
     <div>
       <Header />
-      <Link href='/dashboard'>Dashboard </Link>
+      <div className='m-10'>
+        <Link href={'/dashboard/my-habits'} className='hover:text-tertiary'>
+          Dashboard{' '}
+        </Link>
+      </div>
     </div>
   )
 }
