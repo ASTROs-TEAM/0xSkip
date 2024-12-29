@@ -23,6 +23,8 @@ const Page = () => {
 
   const [inviteCode, setInviteCode] = useState("");
   const [habits, setHabits] = useState<Habit[]>([]);
+  const [searchText, setSearchText] = useState("");
+  const [filteredHabits, setFilteredHabits] = useState<Habit[]>([]);
 
   useEffect(() => {
     const fetchHabits = async () => {
@@ -30,6 +32,7 @@ const Page = () => {
         const res = await fetch("/api/habit");
         const data = await res.json();
         setHabits(data.habits || []);
+        setFilteredHabits(data.habits || []); // Initialize filtered habits
       } catch (err) {
         console.error("Error fetching habits:", err);
       }
@@ -37,6 +40,17 @@ const Page = () => {
 
     fetchHabits();
   }, []);
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
+  };
+
+  const filteringhabit = () => {
+    const filteredData = habits.filter((habit) =>
+      habit.title.toLowerCase().includes(searchText.toLowerCase())
+    );
+    setFilteredHabits(filteredData);
+  };
 
   const handleJoin = async () => {
     if (!inviteCode) {
@@ -79,9 +93,13 @@ const Page = () => {
         <Input
           placeholder="Search Habits"
           className="w-full sm:w-[500px]"
+          onChange={handleSearch}
+          value={searchText}
         />
-        <Button className="w-full sm:w-auto">Search</Button>
-
+        <Button className="w-full sm:w-auto" onClick={filteringhabit}>
+          Search
+        </Button>
+        
         <Dialog>
           <DialogTrigger>
             <Button variant="outline" className="border-tertiary w-full sm:w-auto">
@@ -107,8 +125,8 @@ const Page = () => {
         </Dialog>
       </div>
       <div className="flex flex-wrap gap-2">
-        {habits.length > 0 ? (
-          habits.map((habit, index) => (
+        {filteredHabits.length > 0 ? (
+          filteredHabits.map((habit, index) => (
             <Explorehabits
               key={index}
               title={habit.title}
