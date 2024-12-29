@@ -4,8 +4,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { Switch } from "@/components/ui/switch"
+import { useRouter } from "next/navigation";
 
 const page = () => {
+  const router = useRouter();
   const [habitName, setHabitName] = useState("");
   const [description, setDescription] = useState("");
   const [entryPrize, setEntryPrize] = useState("");
@@ -52,6 +54,7 @@ const page = () => {
     },
   ];
   const handleSubmit = async () => {
+    console.log(habitName, description, entryPrize, startDate, duration,maxParticipants,privateHabit);
     if (
       !habitName ||
       !description ||
@@ -64,15 +67,18 @@ const page = () => {
       return;
     }
     try {
-      const res = await axios.post("/api/habits/1234", {
+      const res = await axios.post("/api/habit", {
+        userid : "1234",
         title : habitName,
-        description,
-        entryPrize,
-        startDate,
+        description : description,
+        entryPrize : entryPrize,
+        startDate : startDate,
         noOfDays : duration,
         maxparticipants : maxParticipants,
+        privatehabit : privateHabit
       });
-      console.log(res);
+      alert("Habit created successfully");
+      router.push("/dashboard/my-habits");
     } catch (err) {
       console.log(err);
     }
