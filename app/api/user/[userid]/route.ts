@@ -1,8 +1,6 @@
 import connecttodb from "@/db/db";
 import { NextResponse,NextRequest } from "next/server";
 import UserModel from "@/db/models/UserSchema";
-import HabitModel from "@/db/models/HabitSchema";
-import HabitParticipationModel from "@/db/models/HabitParticipationSchema";
 
 export async function GET(req: NextRequest) {
     try{

@@ -52,7 +52,7 @@ const Page = () => {
     try {
       const res = await axios.patch("/api/join-by-invite", {
         invite_code: inviteCode,
-        userid: "2367",
+        userid: "123",
       });
       alert(res.data.message || "Successfully joined the habit.");
       setInviteCode("");
