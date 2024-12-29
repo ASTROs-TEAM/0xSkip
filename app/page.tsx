@@ -1,7 +1,13 @@
+import Header from '@/components/Header'
+import SendETHComponent from '@/components/SendTransaction'
+import WalletConnect from '@/components/WalletConnect'
+import Link from 'next/link'
+
 export default function Home() {
   return (
     <div>
-      <h1 className='font-bricolage'>0xSkip</h1>
+      <Header />
+      <Link href='/dashboard'>Dashboard </Link>
     </div>
   )
 }
