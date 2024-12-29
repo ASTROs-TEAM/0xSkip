@@ -1,7 +1,7 @@
 import React from 'react'
 
 const page = () => {
-  return <div className='text-black'>Welcome to dashboard</div>
+  return <div>Create Habit</div>
 }
 
 export default page
