@@ -3,6 +3,10 @@ import HabitModel from "@/db/models/HabitSchema";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
+  /* 
+  GET  ---> Particular Habit Details
+  Habits Description Page
+  */
   try {
     await connecttodb();
     const pathParts = req.nextUrl.pathname.split('/');
@@ -25,6 +29,10 @@ export async function GET(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
+  /*
+  UPDATE  --->  Habit Details like Title, Description
+  Only if he/she is a creator
+  */
   try {
     await connecttodb();
     const pathParts = req.nextUrl.pathname.split('/');
