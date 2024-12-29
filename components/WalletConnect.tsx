@@ -1,6 +1,6 @@
 'use client'
-import useConnect from '@/app/hooks/useConnect'
-import useWallet from '@/app/hooks/useWallet'
+import useConnect from '@/hooks/useConnect'
+import useWallet from '@/hooks/useWallet'
 import { useState } from 'react'
 import { Button } from './ui/button'
 import {
