@@ -16,7 +16,7 @@ const SideNavBar = () => {
               pathname ===
               `/dashboard/${item.toLowerCase().split(' ').join('-')}`
             return (
-              <Link
+              <Link 
                 key={index}
                 href={`/dashboard/${item.toLowerCase().split(' ').join('-')}`}
                 className={`${
