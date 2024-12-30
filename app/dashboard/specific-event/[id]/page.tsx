@@ -54,7 +54,7 @@ const Page = ({ params }: Props) => {
         <p className="text-foreground/60 pl-2">{habitDetails.description}</p>
         <div className="mt-6">
           <h1 className="text-2xl text-foreground/80 pl-2 my-4 font-semibold">
-            Creator: {habitDetails.creatorName}
+            Creator: {habitDetails.creator}
           </h1>
           <div className="grid grid-cols-3 gap-4 border-t border-foreground/20 pt-4">
             <div className="bg-gray-900 rounded-lg p-4 shadow">
@@ -96,8 +96,7 @@ const Page = ({ params }: Props) => {
           Proof of Validation
         </p>
         <p className="text-foreground/60 pl-2 mt-2">
-          Upload your proof of validation for the habit here. Without proof, you
-          cannot complete the habit.
+          {habitDetails.proof_of_validation}
         </p>
         <div className="flex justify-center items-center mt-4">
           <AlertDialog>
