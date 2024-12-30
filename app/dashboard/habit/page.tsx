@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/carousel'
 import { Textarea } from '@/components/ui/textarea'
 import ImageUploader from '@/components/ImageUploader'
+import { Badge } from '@/components/ui/badge'
 
 const page = () => {
   const { data: session } = useSession();
@@ -95,20 +96,27 @@ const page = () => {
         </Dialog>
       </div>
       <div className='my-8'>
-        <Tabs defaultValue='account' className='w-full'>
+        <Tabs defaultValue='progress-history' className='w-full'>
           <TabsList className='w-full bg-transparent border-b-[2px] border-foreground/10'>
-            <TabsTrigger className='text-lg' value='account'>
+            <TabsTrigger
+              className='text-lg  data-[state=active]:border-b-tertiary  data-[state=active]:border-b-[1px]'
+              value='peer-validation'
+            >
               Peer Validation
             </TabsTrigger>
-            <TabsTrigger className='text-lg' value='password'>
+            <TabsTrigger
+              className='text-lg  data-[state=active]:border-b-tertiary  data-[state=active]:border-b-[1px]'
+              value='progress-history'
+            >
               Progress History
             </TabsTrigger>
           </TabsList>
-          <TabsContent value='account' className=''>
+          <TabsContent value='peer-validation' className=''>
             <div className='w-full px-10 p-5'>
               <h2 className='font-medium text-xl'>December 30, 2024</h2>
             </div>
             <div>
+              {/* // Map this card  */}
               <div className='w-[650px] h-max p-4  flex items-center justify-between bg-foreground/10 rounded-lg mx-auto'>
                 <p>GOKULNATH RS </p>
                 <div className='flex gap-2'>
@@ -163,7 +171,70 @@ const page = () => {
               </div>
             </div>
           </TabsContent>
-          <TabsContent value='password'>Change your password here.</TabsContent>
+          <TabsContent value='progress-history'>
+            <div className='w-full px-10 p-5'>
+              <h2 className='font-medium text-xl'>Your Progress</h2>
+            </div>
+            <div className='w-[650px] mx-auto bg-foreground/10 px-4 py-2 rounded-lg'>
+              <div className='w-full h-max flex items-center justify-between '>
+                <div>
+                  <p className='text-2xl font-bricolage'>Learn JavaScript</p>
+                  <Badge variant={'pending'} className='rounded-full h-4 '>
+                    Pending
+                  </Badge>
+                </div>
+                <div className='flex gap-2'>
+                  <Dialog>
+                    <DialogTrigger>
+                      <Button>View</Button>
+                    </DialogTrigger>
+                    <DialogContent className='p-8'>
+                      <DialogHeader>
+                        <DialogTitle className='text-2xl'>Progress</DialogTitle>
+                        <DialogDescription className='text-md text-foreground'>
+                          I have completed the first 10 chapters of the book. I
+                          have completed the first 10 chapters of the book. I
+                          have completed the first 10 chapters of the book. I
+                          have completed the first 10 chapters of the book. I
+                          have completed the first 10 chapters of the book.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className='w-full'>
+                        <DialogTitle className='text-2xl'>
+                          Proof of Work
+                        </DialogTitle>
+                        <Carousel>
+                          <CarouselContent>
+                            {[
+                              'https://firebasestorage.googleapis.com/v0/b/photo-management-app-17909.appspot.com/o/xora%2Fmusic-concert.jpg?alt=media&token=b9959dd3-2aa2-431a-a843-d948d952c095',
+                              'https://firebasestorage.googleapis.com/v0/b/photo-management-app-17909.appspot.com/o/xora%2Ftech-conf.jpg?alt=media&token=a89b25a5-86ba-49a3-8f2d-f3b00165d17d',
+                              'https://firebasestorage.googleapis.com/v0/b/photo-management-app-17909.appspot.com/o/xora%2Fart-exhibition.jpg?alt=media&token=e583f0ff-6779-41a9-b30b-8e3641294dab'
+                            ].map((item, index) => (
+                              <CarouselItem
+                                key={index}
+                                className=' h-[300px] p-1 m-1 flex-shrink-0'
+                              >
+                                <img
+                                  src={item}
+                                  alt='proof'
+                                  className='w-full h-full object-cover rounded-lg'
+                                />
+                              </CarouselItem>
+                            ))}
+                          </CarouselContent>
+                          <CarouselPrevious />
+                          <CarouselNext />
+                        </Carousel>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </div>
+              <div className='mt-2'>
+                <h1 className='text-end'>30/12/2024</h1>
+              </div>
+            </div>
+          </TabsContent>
         </Tabs>
       </div>
     </div>
