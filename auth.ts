@@ -18,7 +18,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (existingUser) {
           token.userid = existingUser.userid
         } else {
-          console.log('user', user)
           const newUser = new UserModel({
             userid: v4(),
             email: user.email,
@@ -30,7 +29,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           token.userid = newUser.userid
         }
       }
-      console.log('jwt', token)
       return token
     },
     async session({ session, token }: any) {
