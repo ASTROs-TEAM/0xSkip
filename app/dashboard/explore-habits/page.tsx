@@ -45,10 +45,10 @@ const Page = () => {
         console.error('Error fetching habits:', err)
       }
     }
-
+    
     fetchHabits();
   }, []);
-
+  
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
   };
@@ -58,6 +58,7 @@ const Page = () => {
       habit.title.toLowerCase().includes(searchText.toLowerCase())
     );
     setFilteredHabits(filteredData);
+    
   };
 
   const handleJoin = async () => {

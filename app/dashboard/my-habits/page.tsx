@@ -26,20 +26,15 @@ const page = () => {
       try {
         const res = await fetch(`/api/user/${userid}`)
         const data = await res.json()
-
         const currentHabits = data.user.current_habits || []
-        console.log('Current Habits IDs:', currentHabits)
 
-        // Fetch detailed habits using habit IDs
         const detailedHabits = await Promise.all(
           currentHabits.map(async (habitid: string) => {
             const habitRes = await fetch(`/api/habit/${habitid}`)
             const habitData = await habitRes.json()
-            return habitData.habit // Extract the habit object
+            return habitData.habit
           })
         )
-
-        console.log('Detailed Habits:', detailedHabits)
         setmyHabits(detailedHabits)
         setFilteredHabits(detailedHabits)
       } catch (err) {
