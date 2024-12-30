@@ -16,7 +16,8 @@ const HabitSchema = new mongoose.Schema({
   withdrawn_participants: [{ type: String, ref: 'User' }],
   maxpartipants: { type: Number },
   privatehabit: { type: Boolean, default: false },
-  invite_code: { type: Number, default: null }
+  invite_code: { type: Number, default: null },
+  proof_of_validation : { type: String, required: true },
 })
 
 const HabitModel = mongoose.models.Habit || mongoose.model('Habit', HabitSchema)
