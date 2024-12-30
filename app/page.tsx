@@ -7,7 +7,7 @@ export default function Home() {
       <Header />
       <div className='m-10'>
         <Link href={'/dashboard/my-habits'} className='hover:text-tertiary'>
-          Dashboard{' '}
+          Dashboard
         </Link>
       </div>
     </div>
