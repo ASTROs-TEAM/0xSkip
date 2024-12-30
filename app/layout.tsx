@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import { Bricolage_Grotesque, Inter } from 'next/font/google'
 import './globals.css'
 import { SessionProvider } from 'next-auth/react'
+import { Toaster } from "@/components/ui/sonner"
 
 const inter = Inter({
   variable: '--font-inter',
@@ -30,6 +31,7 @@ export default function RootLayout({
         className={`${inter.className} ${bricolage.variable} antialiased dark mx-48`}
       >
         <SessionProvider>{children}</SessionProvider>
+        <Toaster />
       </body>
     </html>
   )

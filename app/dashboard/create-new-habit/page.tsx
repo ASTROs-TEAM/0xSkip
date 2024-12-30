@@ -1,11 +1,14 @@
-"use client";
-import React, { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import axios from "axios";
-import { Switch } from "@/components/ui/switch";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+'use client'
+import React, { useState } from 'react'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import axios from 'axios'
+import { Switch } from '@/components/ui/switch'
+import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
+import { toast } from "sonner"
+
+
 
 const page = () => {
   const router = useRouter();
@@ -58,6 +61,15 @@ const page = () => {
     },
   ];
   const handleSubmit = async () => {
+    // console.log(
+    //   habitName,
+    //   description,
+    //   entryPrize,
+    //   startDate,
+    //   duration,
+    //   maxParticipants,
+    //   privateHabit
+    // )
     if (
       !habitName ||
       !description ||
@@ -67,8 +79,10 @@ const page = () => {
       !maxParticipants ||
       !proofOfValidation
     ) {
-      alert("Please fill all the fields");
-      return;
+      console.log("toast reached")
+     return toast("Please  fill the required fields")
+
+      
     }
   
     try {
