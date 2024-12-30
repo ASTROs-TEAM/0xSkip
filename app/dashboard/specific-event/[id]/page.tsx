@@ -22,7 +22,7 @@ type Props = {
   }
 }
 
-const Page = ({ params }: Props) => {
+const Page = ({ params }: any) => {
   const { id } = params
   const [name, setname] = useState('')
   const router = useRouter()
