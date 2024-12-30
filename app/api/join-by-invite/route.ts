@@ -26,6 +26,7 @@ export async function PATCH(req: NextRequest) {
     if (!user) {
       return NextResponse.json({ message: 'User not found' }, { status: 404 })
     }
+   
     user.current_habits.push(habit.habitid)
     await user.save()
 

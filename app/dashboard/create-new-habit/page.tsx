@@ -6,6 +6,9 @@ import axios from 'axios'
 import { Switch } from '@/components/ui/switch'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
+import { toast } from "sonner"
+
+
 
 const page = () => {
   const router = useRouter()
@@ -57,15 +60,15 @@ const page = () => {
     }
   ]
   const handleSubmit = async () => {
-    console.log(
-      habitName,
-      description,
-      entryPrize,
-      startDate,
-      duration,
-      maxParticipants,
-      privateHabit
-    )
+    // console.log(
+    //   habitName,
+    //   description,
+    //   entryPrize,
+    //   startDate,
+    //   duration,
+    //   maxParticipants,
+    //   privateHabit
+    // )
     if (
       !habitName ||
       !description ||
@@ -74,8 +77,10 @@ const page = () => {
       !duration ||
       !maxParticipants
     ) {
-      alert('Please fill all the fields')
-      return
+      console.log("toast reached")
+     return toast("Please  fill the required fields")
+
+      
     }
     try {
       const res = await axios.post('/api/habit', {
@@ -88,10 +93,13 @@ const page = () => {
         maxparticipants: maxParticipants,
         privatehabit: privateHabit
       })
-      alert('Habit created successfully')
+     
+      toast.success('Habit created successfully')
       router.push('/dashboard/my-habits')
     } catch (err) {
       console.log(err)
+      toast.error(`Can'\t create habit...Please try again later`)
+      return 
     }
   }
   return (

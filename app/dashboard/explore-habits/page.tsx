@@ -12,7 +12,10 @@ import {
 } from '@/components/ui/dialog'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+// import { useSession } from 'next-auth/react'
 import { useSession } from 'next-auth/react'
+import { toast } from "sonner"
+
 
 const Page = () => {
   interface Habit {
@@ -27,29 +30,44 @@ const Page = () => {
   const [habits, setHabits] = useState<Habit[]>([])
 
   const { data: session }: any = useSession()
+  const [searchText, setSearchText] = useState("");
+  const [filteredHabits, setFilteredHabits] = useState<Habit[]>([]);
 
   useEffect(() => {
     const fetchHabits = async () => {
       try {
-        const res = await fetch('/api/habit')
-        const data = await res.json()
-        setHabits(data.habits || [])
+        const res = await fetch("/api/habit");
+        const data = await res.json();
+        setHabits(data.habits || []);
+        setFilteredHabits(data.habits || []);
       } catch (err) {
+        toast('Error fecthing habits')
         console.error('Error fetching habits:', err)
       }
     }
 
-    fetchHabits()
-  }, [])
+    fetchHabits();
+  }, []);
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
+  };
+
+  const filteringhabit = () => {
+    const filteredData = habits.filter((habit) =>
+      habit.title.toLowerCase().includes(searchText.toLowerCase())
+    );
+    setFilteredHabits(filteredData);
+  };
 
   const handleJoin = async () => {
     if (!inviteCode) {
-      alert('Please enter an invite code.')
+      toast('Please enter an invite code.')
       return
     }
 
     if (inviteCode.length !== 6) {
-      alert('Invite code should be exactly 6 characters.')
+      toast('Invite code should be exactly 6 characters.')
       return
     }
 
@@ -58,14 +76,14 @@ const Page = () => {
         invite_code: inviteCode,
         userid: session?.userid
       })
-      alert(res.data.message || 'Successfully joined the habit.')
+      toast(res.data.message || 'Successfully joined the habit.')
       setInviteCode('')
     } catch (err: any) {
       console.error('Error joining habit:', err)
       if (err.response) {
-        alert(err.response.data.message || 'Failed to join habit.')
+        toast(err.response.data.message || 'Failed to join habit.')
       } else {
-        alert('An unexpected error occurred. Please try again.')
+        toast('An unexpected error occurred. Please try again.')
       }
     }
   }
@@ -79,10 +97,17 @@ const Page = () => {
           and challenge yourself.
         </p>
       </div>
-      <div className='flex flex-wrap gap-2 mb-4'>
-        <Input placeholder='Search Habits' className='w-full sm:w-[500px]' />
-        <Button className='w-full sm:w-auto'>Search</Button>
-
+      <div className="flex flex-wrap gap-2 mb-4">
+        <Input
+          placeholder="Search Habits"
+          className="w-full sm:w-[500px]"
+          onChange={handleSearch}
+          value={searchText}
+        />
+        <Button className="w-full sm:w-auto" onClick={filteringhabit}>
+          Search
+        </Button>
+        
         <Dialog>
           <DialogTrigger>
             <Button
@@ -110,9 +135,9 @@ const Page = () => {
           </DialogContent>
         </Dialog>
       </div>
-      <div className='flex flex-wrap gap-2'>
-        {habits.length > 0 ? (
-          habits.map((habit, index) => (
+      <div className="flex flex-wrap gap-2">
+        {filteredHabits.length > 0 ? (
+          filteredHabits.map((habit, index) => (
             <Explorehabits
               key={index}
               title={habit.title}

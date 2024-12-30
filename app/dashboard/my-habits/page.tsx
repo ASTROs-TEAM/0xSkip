@@ -1,64 +1,103 @@
-import { MyHabitsCard } from '@/components/MyHabitsCard'
-import RightPanel from '@/components/RightPanel'
-import React from 'react'
+"use client";
+
+import { MyHabitsCard } from "@/components/MyHabitsCard";
+import RightPanel from "@/components/RightPanel";
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 const page = () => {
-  const habits = [
-    {
-      id: '1',
-      HabitTitle: 'Morning Meditation',
-      HabitDesc:
-        'Spend 10 minutes each morning meditating to improve focus and reduce stress.'
-    },
-    {
-      id: '2',
-      HabitTitle: 'Daily Reading',
-      HabitDesc:
-        'Read at least 20 pages of a book to expand knowledge and improve comprehension skills.'
-    },
-    {
-      id: '3',
-      HabitTitle: 'Evening Gratitude Journal',
-      HabitDesc:
-        'Write down three things you are grateful for each evening to foster a positive mindset.'
-    },
-    {
-      id: '4',
-      HabitTitle: 'Hydration Check',
-      HabitDesc:
-        'Drink at least 8 glasses of water daily to stay hydrated and maintain good health.'
-    },
-    {
-      id: '5',
-      HabitTitle: 'Daily Walk',
-      HabitDesc:
-        'Go for a 30-minute walk every day to boost physical fitness and mental clarity.'
-    }
-  ]
+  interface Habit {
+    habitid: string;
+    title: string;
+    description: string;
+    participants: Array<string>;
+    entryPrize: string;
+  }
+
+  const [myhabits, setmyHabits] = useState<Habit[]>([]);
+  const [searchText, setSearchText] = useState("");
+  const [filteredHabits, setFilteredHabits] = useState<Habit[]>([]);
+
+  const userid = "1d2f6253-ca44-4bd3-924e-c47c3f8e6aeb";
+
+  useEffect(() => {
+    const fetchHabits = async () => {
+      try {
+        const res = await fetch(`/api/user/${userid}`);
+        const data = await res.json();
+
+        const currentHabits = data.user.current_habits || [];
+        console.log("Current Habits IDs:", currentHabits);
+
+        // Fetch detailed habits using habit IDs
+        const detailedHabits = await Promise.all(
+          currentHabits.map(async (habitid: string) => {
+            const habitRes = await fetch(`/api/habit/${habitid}`);
+            const habitData = await habitRes.json();
+            return habitData.habit; // Extract the habit object
+          })
+        );
+
+        console.log("Detailed Habits:", detailedHabits);
+        setmyHabits(detailedHabits);
+        setFilteredHabits(detailedHabits);
+      } catch (err) {
+        console.error("Error fetching habits:", err);
+      }
+    };
+
+    fetchHabits();
+  }, []);
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
+  };
+
+  const filteringhabit = () => {
+    const filteredData = myhabits.filter((habit) =>
+      habit.title.toLowerCase().includes(searchText.toLowerCase())
+    );
+    setFilteredHabits(filteredData);
+  };
 
   return (
-    <section className='grid grid-cols-[65%_35%]'>
-      <div className='flex flex-col  text-white h-full overflow-y-auto py-6 px-4'>
-        <div className='my-1 text-foreground/80'>
-          <h1 className='text-4xl font-bold'>Your Habits</h1>
+    <section className="grid grid-cols-[65%_35%]">
+      <div className="flex flex-col text-white h-full overflow-y-auto py-6 px-4">
+        <div className="my-1 text-foreground/80">
+          <h1 className="text-4xl font-bold">Your Habits</h1>
         </div>
-        <div>
-          <h1>Search Habits</h1>
+        <div className="flex flex-wrap gap-2 mb-4">
+          <Input
+            placeholder="Search Habits"
+            className="w-full sm:w-[500px]"
+            onChange={handleSearch}
+            value={searchText}
+          />
+          <Button className="w-full sm:w-auto" onClick={filteringhabit}>
+            Search
+          </Button>
         </div>
-        <div className='flex flex-col gap-1 p-2'>
-          {habits.map((item) => (
-            <MyHabitsCard
-              key={item.id}
-              id={item.id}
-              HabitTitle={item.HabitTitle}
-              HabitDesc={item.HabitDesc}
-            />
-          ))}
+        <div className="flex flex-col gap-1 p-2">
+          {filteredHabits.length > 0 ? (
+            filteredHabits.map((item, index) => (
+              <MyHabitsCard
+                key={index}
+                id={item.habitid}
+                HabitTitle={item.title}
+                HabitDesc={item.description}
+                noofparticipants={item.participants.length}
+                entryPrize={item.entryPrize}
+                />
+            ))
+          ) : (
+            <p>No habits found</p>
+          )}
         </div>
       </div>
       <RightPanel />
     </section>
-  )
-}
+  );
+};
 
-export default page
+export default page;
