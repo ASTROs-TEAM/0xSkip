@@ -1,4 +1,4 @@
-# 0xSKIP
+<img src="./public/0xSKIP.svg" width="100%"/>
 
 ## About the Project
 
