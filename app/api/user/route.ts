@@ -100,7 +100,7 @@ export async function PATCH(req: NextRequest) {
     await habitParticipant.save();
 
     return NextResponse.json(
-      { message: "Habit joined successfully" },
+      { message: "Joined in habit successfully" },
       { status: 200 }
     );
   } catch (err:any) {

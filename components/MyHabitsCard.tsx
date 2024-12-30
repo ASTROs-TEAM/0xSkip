@@ -13,7 +13,9 @@ interface MyHabitsCardProps
   HabitTitle: string
   HabitDesc: string
   id: string
+  noofparticipants:number
   privateHabit?: boolean
+  entryPrize:string
 }
 
 const MyHabitsCardVariants = cva(
@@ -42,8 +44,11 @@ const MyHabitsCard: FC<MyHabitsCardProps> = ({
   variant,
   HabitTitle,
   HabitDesc,
+  noofparticipants,
   id,
   privateHabit,
+  entryPrize,
+
   ...props
 }) => {
   return (
@@ -66,7 +71,7 @@ const MyHabitsCard: FC<MyHabitsCardProps> = ({
         <div className='flex items-center gap-2 text-gray-400'>
           <span className='flex items-center gap-1'>
             <Image src={personicon} alt='person icon' width={16} height={16} />
-            20
+           {noofparticipants}
           </span>
           <span className='flex items-center gap-1'>
             <Image
@@ -75,14 +80,14 @@ const MyHabitsCard: FC<MyHabitsCardProps> = ({
               width={16}
               height={16}
             />
-            2
+            {entryPrize}
           </span>
         </div>
         <Link
           href={`/dashboard/my-habits/${id}`}
           className='text-md hover:underline hover:text-tertiary  bg-transparent p-2 rounded-md flex items-center'
         >
-          More info
+          Update Progress
           <ArrowUpRight className='text-tertiary' size={'20px'} />
         </Link>
       </div>
