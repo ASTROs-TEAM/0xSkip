@@ -1,6 +1,5 @@
 'use server'
-
-import { cloudinary } from '@/config/cloudinary'
+import { cloudinary } from '@/config/cloudinary';
 import { UploadApiResponse, UploadApiErrorResponse } from 'cloudinary'
 
 type UploadResponse =

@@ -1,6 +1,8 @@
 'use client'
 import { Button } from '@/components/ui/button'
-import React, { use, useEffect, useState } from 'react'
+import { useSession } from 'next-auth/react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Dialog,
@@ -22,12 +24,44 @@ import ImageUploader from '@/components/ImageUploader'
 import { Badge } from '@/components/ui/badge'
 
 const page = () => {
-  const [proofOfWork, setProofOfWork] = useState<Array<String>>([''])
-
+  const { data: session } = useSession();
+  
+  const [progress, setProgress] = useState("");
+  const [proofOfWork, setProofOfWork] = useState<Array<String>>(['']);
+  
   useEffect(() => {
-    // Fetch the data from the server
-    console.log('Proof of work', proofOfWork)
-  }, [proofOfWork])
+    console.log('Proof of work', proofOfWork);
+  }, [proofOfWork]);
+
+  const habitid = "e54ee2f4-abb1-41c0-b680-902c086de976";
+
+  const handleProgressAdd = async () => {
+    if (!session?.userid) {
+      console.error('User not logged in');
+      return;
+    }
+
+    const { userid } = session; 
+
+   
+
+    try {
+      const response = await axios.post('/api/progress', {
+        habitid,
+        userid,
+        progress,
+        proof_imgs: proofOfWork,
+      });
+
+      if (response.status === 200) {
+        console.log('Progress added successfully:', response.data);
+      } else {
+        console.error('Error adding progress:', response.data);
+      }
+    } catch (error) {
+      console.error('Error during API call:', error);
+    }
+  };
 
   return (
     <div>
@@ -50,14 +84,14 @@ const page = () => {
             <DialogHeader>
               <DialogTitle className='text-2xl'>Progress</DialogTitle>
               <DialogDescription className='text-md text-foreground'>
-                <Textarea placeholder='Enter your progress here' />
+                <Textarea placeholder='Enter your progress here' onChange={(e) => setProgress(e.target.value)} />
               </DialogDescription>
             </DialogHeader>
             <div className='w-full'>
               <DialogTitle className='text-2xl'>Proof of Work</DialogTitle>
               <ImageUploader setFunction={setProofOfWork} />
             </div>
-            <Button className='w-full mt-4'>Submit</Button>
+            <Button className='w-full mt-4' onClick={handleProgressAdd}>Submit</Button>
           </DialogContent>
         </Dialog>
       </div>
@@ -94,11 +128,7 @@ const page = () => {
                       <DialogHeader>
                         <DialogTitle className='text-2xl'>Progress</DialogTitle>
                         <DialogDescription className='text-md text-foreground'>
-                          I have completed the first 10 chapters of the book. I
-                          have completed the first 10 chapters of the book. I
-                          have completed the first 10 chapters of the book. I
-                          have completed the first 10 chapters of the book. I
-                          have completed the first 10 chapters of the book.
+                          I have completed the first 10 chapters of the book.
                         </DialogDescription>
                       </DialogHeader>
                       <div className='w-full'>
@@ -107,14 +137,14 @@ const page = () => {
                         </DialogTitle>
                         <Carousel>
                           <CarouselContent>
-                            {[
+                            {[ 
                               'https://firebasestorage.googleapis.com/v0/b/photo-management-app-17909.appspot.com/o/xora%2Fmusic-concert.jpg?alt=media&token=b9959dd3-2aa2-431a-a843-d948d952c095',
                               'https://firebasestorage.googleapis.com/v0/b/photo-management-app-17909.appspot.com/o/xora%2Ftech-conf.jpg?alt=media&token=a89b25a5-86ba-49a3-8f2d-f3b00165d17d',
                               'https://firebasestorage.googleapis.com/v0/b/photo-management-app-17909.appspot.com/o/xora%2Fart-exhibition.jpg?alt=media&token=e583f0ff-6779-41a9-b30b-8e3641294dab'
                             ].map((item, index) => (
                               <CarouselItem
                                 key={index}
-                                className=' h-[300px] p-1 m-1 flex-shrink-0'
+                                className='h-[300px] p-1 m-1 flex-shrink-0'
                               >
                                 <img
                                   src={item}
@@ -133,7 +163,7 @@ const page = () => {
 
                   <Button
                     variant={'outline'}
-                    className='w-max border-tertiary  '
+                    className='w-max border-tertiary'
                   >
                     Validate
                   </Button>
@@ -208,7 +238,7 @@ const page = () => {
         </Tabs>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default page
+export default page;
