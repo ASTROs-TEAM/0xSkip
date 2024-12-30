@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import personicon from "@/app/persons.svg";
 import ethereumicon from "@/app/ethereum.svg";
+import Link from "next/link";
 
 interface ExplorehabitsProps
   extends React.HTMLAttributes<HTMLDivElement>,
@@ -13,6 +14,7 @@ interface ExplorehabitsProps
   description: string;
   participants: number;
   entryPrize: string;
+  habitid: string;
 }
 
 const ExplorehabitsVariants = cva(
@@ -35,6 +37,7 @@ const ExplorehabitsVariants = cva(
   }
 );
 
+
 const Explorehabits: FC<ExplorehabitsProps> = ({
   className,
   size,
@@ -43,6 +46,7 @@ const Explorehabits: FC<ExplorehabitsProps> = ({
   description,
   participants,
   entryPrize,
+  habitid,
   ...props
 }) => {
   return (
@@ -68,10 +72,10 @@ const Explorehabits: FC<ExplorehabitsProps> = ({
             {entryPrize}
           </span>
         </div>
-        <button className="text-sm hover:underline hover:text-tertiary bg-transparent p-2 rounded-md flex items-center">
+        <Link href={`/dashboard/specific-event/${habitid}`} className="text-sm hover:underline hover:text-tertiary bg-transparent p-2 rounded-md flex items-center">
           More info
           <ArrowUpRight className="text-tertiary" size="20px" />
-        </button>
+        </Link>
       </div>
     </div>
   );

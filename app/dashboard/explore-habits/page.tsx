@@ -20,6 +20,7 @@ const Page = () => {
     description: string
     participants: Array<string>
     entryPrize: string
+    habitid: string;
   }
 
   const [inviteCode, setInviteCode] = useState('')
@@ -118,6 +119,7 @@ const Page = () => {
               description={habit.description}
               participants={habit.participants.length}
               entryPrize={habit.entryPrize}
+              habitid={habit.habitid}
             />
           ))
         ) : (
