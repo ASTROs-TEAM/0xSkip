@@ -14,7 +14,7 @@ interface ExplorehabitsProps
   description: string;
   participants: number;
   entryPrize: string;
-  habitid: string;
+  habitid: string
 }
 
 const ExplorehabitsVariants = cva(
