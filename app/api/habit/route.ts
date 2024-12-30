@@ -41,7 +41,8 @@ export async function POST(req: NextRequest) {
       startDate,
       noOfDays,
       maxpartipants,
-      privatehabit
+      privatehabit,
+      proof_of_validation
     } = data
 
     if (!title || !startDate || !noOfDays || !entryPrize ) {
@@ -66,7 +67,8 @@ export async function POST(req: NextRequest) {
       noOfDays,
       endDate,
       maxpartipants,
-      privatehabit
+      privatehabit,
+      proof_of_validation
     }
 
     let inviteCodeGenerated = OtpGenerator.generate(6, {

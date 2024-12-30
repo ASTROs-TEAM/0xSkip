@@ -102,8 +102,7 @@ const[name,setname]=useState('');
           Proof of Validation
         </p>
         <p className="text-foreground/60 pl-2 mt-2">
-          Upload your proof of validation for the habit here. Without proof, you
-          cannot complete the habit.
+          {habitDetails.proof_of_validation}
         </p>
         <div className="flex justify-center items-center mt-4">
           <AlertDialog>
