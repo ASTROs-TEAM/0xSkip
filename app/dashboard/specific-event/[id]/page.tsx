@@ -20,7 +20,7 @@ type Props = {
 
 const Page = ({ params }: Props) => {
   const { id } = params;
-
+const[name,setname]=useState('');
   const [habitDetails, setHabitDetails] = useState<any>(null);
   const formatDate = (isoDate: string): string => {
     return new Date(isoDate).toISOString().split("T")[0];
@@ -34,7 +34,13 @@ const Page = ({ params }: Props) => {
           throw new Error(`Failed to fetch habit details: ${res.status}`);
         }
         const data = await res.json();
+        const creator=data.habit.creator
         setHabitDetails(data.habit);
+        const creatordetails=await  fetch(`/api/user/${creator}`);
+        const creatordetails1=await creatordetails.json();
+        setname(creatordetails1.user.fullname)
+        console.log(name)
+
       } catch (err) {
         console.error("Error fetching habit details:", err);
       }
@@ -54,7 +60,7 @@ const Page = ({ params }: Props) => {
         <p className="text-foreground/60 pl-2">{habitDetails.description}</p>
         <div className="mt-6">
           <h1 className="text-2xl text-foreground/80 pl-2 my-4 font-semibold">
-            Creator: {habitDetails.creatorName}
+            Creator: {name}
           </h1>
           <div className="grid grid-cols-3 gap-4 border-t border-foreground/20 pt-4">
             <div className="bg-gray-900 rounded-lg p-4 shadow">
