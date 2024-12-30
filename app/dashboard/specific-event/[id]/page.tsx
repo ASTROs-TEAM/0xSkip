@@ -66,7 +66,7 @@ const[name,setname]=useState('');
             <div className="bg-gray-900 rounded-lg p-4 shadow">
               <h2 className="text-lg text-foreground/80">Participants</h2>
               <p className="text-xl font-semibold text-foreground">
-                {habitDetails.participants}
+                {habitDetails.participants.length}
               </p>
             </div>
             <div className="bg-gray-900 rounded-lg p-4 shadow">
