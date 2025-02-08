@@ -2,7 +2,7 @@
 import { Button } from '@/components/ui/button'
 import { useSession } from 'next-auth/react'
 import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Dialog,
@@ -24,18 +24,32 @@ import ImageUploader from '@/components/ImageUploader'
 import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
 
-const page = () => {
+const page = ({ params }: any) => {
   const { data: session } = useSession()
-
   const [progress, setProgress] = useState('')
-  const [proofOfWork, setProofOfWork] = useState<Array<String>>([])
+  const [habits, setHabits] = useState<any>({})
+  const [proofOfWork, setProofOfWork] = useState<Array<String>>([''])
+
+  const userid = session?.userid
+  console.log('userid', userid)
+
+  const habitid = params.id
 
   useEffect(() => {
-    console.log('Proof of work', proofOfWork)
-  }, [proofOfWork])
-
-  // change to the current habit id
-  const habitid = 'e54ee2f4-abb1-41c0-b680-902c086de976'
+    const fetchHabits = async () => {
+      try {
+        const response = await fetch(`/api/habit/${habitid}`)
+        if (!response.ok) {
+          throw new Error('Failed to fetch habits')
+        }
+        const data = await response.json()
+        setHabits(data)
+      } catch (err) {
+        console.error('Error fetching habits:', err)
+      }
+    }
+    fetchHabits()
+  }, [])
 
   const handleProgressAdd = async () => {
     if (!session?.userid) {
@@ -43,21 +57,22 @@ const page = () => {
       return
     }
 
-
     try {
       const response = await axios.post('/api/progress', {
         habitid,
-        userid : session?.userid,
+        userid: session?.userid,
         progress,
         proof_imgs: proofOfWork
       })
 
       if (response.status === 200) {
+        toast.success('Proof of Validation added successfully')
         console.log('Progress added successfully:', response.data)
       } else {
         console.error('Error adding progress:', response.data)
       }
     } catch (error) {
+      toast.error('Failed to add Proof of Validation')
       console.error('Error during API call:', error)
     }
   }
@@ -66,26 +81,24 @@ const page = () => {
     const habitid = 'e54ee2f4-abb1-41c0-b680-902c086de976'
     const userid = '857cc48a-059c-4491-9073-e7a3b238a645'
 
-
     if (!session?.userid) {
       toast.error('User not logged in')
       return
     }
 
     const validatorUserId = session?.userid
-    
-    try {
 
+    try {
       if (userid === validatorUserId) {
         toast.error('User cannot validate their own proof of work')
         return
       }
-      
+
       toast.promise(
         axios.patch('/api/validate', {
           habitid,
           userid,
-          validatorUserId,
+          validatorUserId
         }),
         {
           loading: 'Validating proof of work',
@@ -96,23 +109,19 @@ const page = () => {
           error: 'Error validating proof of work'
         }
       )
-
     } catch (error) {
       console.error('Error validating proof of work:', error)
     }
-
   }
 
   return (
     <div>
       <div className='my-8'>
         <h1 className='text-4xl font-bricolage font-semibold text-center'>
-          Learn JavaScript
+          {habits?.habit?.title}
         </h1>
         <p className='text-foreground/60 text-center font-normal w-[60%] mx-auto mt-4 leading-snug'>
-          Learning JavaScript is a valuable skill that opens up numerous
-          opportunities in web development. By mastering JavaScript, you can
-          create dynamic and interactive web applications
+          {habits?.habit?.description}
         </p>
       </div>
       <div className='flex justify-center gap-4'>
