@@ -22,12 +22,14 @@ const page = () => {
 
   const { data: session } = useSession()
   const userid = session?.userid
-
+  console.log("userid", userid) 
   useEffect(() => {
     const fetchHabits = async () => {
+      if(!userid) return
       try {
         const res = await fetch(`/api/user/${userid}`)
         const data = await res.json()
+        console.log(data);
         const currentHabits = data.user.current_habits || []
 
         const detailedHabits = await Promise.all(
@@ -45,7 +47,7 @@ const page = () => {
     }
 
     fetchHabits()
-  }, [])
+  }, [userid])
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value)

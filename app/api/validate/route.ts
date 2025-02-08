@@ -1,4 +1,5 @@
 import connecttodb from "@/db/db";
+import HabitParticipationModel from "@/db/models/HabitParticipationSchema";
 import ValidationModel from "@/db/models/ValidationSchema";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -30,17 +31,36 @@ export async function PATCH(req: NextRequest) {
         );
       }
   
+      let HabitParticipationOption ;
+
       if (!validateWork.validated_by.includes(validatorUserId)) {
         validateWork.validated_by.push(validatorUserId);
   
+
         if (validateWork.validated_by.length === 2) {
           validateWork.validation_status = "partial";
+          HabitParticipationOption = {
+            $inc: { daysChecked: 1 }
+          }
+  
         } else if (validateWork.validated_by.length === 3) {
+          console.log("here")
           validateWork.validation_status = "validated";
           validateWork.validation_status_bool = true;
-        }
+          console.log("habitid: ",habitid, "userid: ", userid);
+
+          await HabitParticipationModel.findOneAndUpdate({
+             habitid,
+             userid,
+            }, {
+              $inc: { daysValidated: 1}
+            })
+          }
+
   
         await validateWork.save(); 
+
+        
         return NextResponse.json(
           { message: 'Progress validated successfully', validateWork },
           { status: 200 }
