@@ -2,7 +2,7 @@
 import { Button } from '@/components/ui/button'
 import { useSession } from 'next-auth/react'
 import axios from 'axios'
-import React, { use, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Dialog,
@@ -23,33 +23,50 @@ import { Textarea } from '@/components/ui/textarea'
 import ImageUploader from '@/components/ImageUploader'
 import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
 const page = ({ params }: any) => {
-  const { data: session } = useSession()
+  const { data: session } : any = useSession()
   const [progress, setProgress] = useState('')
   const [habits, setHabits] = useState<any>({})
+  const [validations,setValidations] = useState<Array<String>>([])
+  const [validationsOfUser, setValidationOfUser] = useState('')
   const [proofOfWork, setProofOfWork] = useState<Array<String>>([''])
 
-  const userid = session?.userid
-  console.log('userid', userid)
+  const router = useRouter()
 
-  const habitid = params.id
+  let userid = session?.userid
+  let habitid = params.id
 
   useEffect(() => {
+    if (!userid) {
+      console.log('User not logged in')
+      return 
+    }
     const fetchHabits = async () => {
       try {
-        const response = await fetch(`/api/habit/${habitid}`)
-        if (!response.ok) {
-          throw new Error('Failed to fetch habits')
+
+        const body = {
+          habitid,
+          userid,
+          withValidations: true
         }
-        const data = await response.json()
-        setHabits(data)
-      } catch (err) {
-        console.error('Error fetching habits:', err)
+        const response : any = await axios.post(`/api/habit/${habitid}`,body)
+        const result = response.data
+        setHabits(result)
+        if (result.validations.length !== 0) {
+          console.log('No validations found')
+          setValidations(result.validations)
+          setValidationOfUser(result.validationsForUser)
+        }
+          
+        console.log('Habits fetched:', response.data)
+      } catch (err:any) {
+        console.log('Error fetching habits:', err?.response?.data?.message)
       }
     }
     fetchHabits()
-  }, [])
+  }, [userid])
 
   const handleProgressAdd = async () => {
     if (!session?.userid) {
@@ -77,19 +94,16 @@ const page = ({ params }: any) => {
     }
   }
 
-  const validateProofOfWork = async () => {
-    const habitid = 'e54ee2f4-abb1-41c0-b680-902c086de976'
-    const userid = '857cc48a-059c-4491-9073-e7a3b238a645'
-
+  const validateProofOfWork = async (validateUserId: string) => {
     if (!session?.userid) {
       toast.error('User not logged in')
       return
     }
 
-    const validatorUserId = session?.userid
+    const validatorUserId = userid
 
     try {
-      if (userid === validatorUserId) {
+      if (validateUserId === validatorUserId) {
         toast.error('User cannot validate their own proof of work')
         return
       }
@@ -97,16 +111,19 @@ const page = ({ params }: any) => {
       toast.promise(
         axios.patch('/api/validate', {
           habitid,
-          userid,
+          userid: validateUserId,
           validatorUserId
         }),
         {
           loading: 'Validating proof of work',
           success: (data) => {
             console.log('Proof of work validated:', data)
+
             return 'Progress validated'
           },
-          error: 'Error validating proof of work'
+          error: (data) => {
+            return data.response.data.message
+          }
         }
       )
     } catch (error) {
@@ -150,7 +167,7 @@ const page = ({ params }: any) => {
         </Dialog>
       </div>
       <div className='my-8'>
-        <Tabs defaultValue='progress-history' className='w-full'>
+        <Tabs defaultValue='peer-validation' className='w-full'>
           <TabsList className='w-full bg-transparent border-b-[2px] border-foreground/10'>
             <TabsTrigger
               className='text-lg  data-[state=active]:border-b-tertiary  data-[state=active]:border-b-[1px]'
@@ -171,59 +188,85 @@ const page = ({ params }: any) => {
             </div>
             <div>
               {/* // Map this card  */}
-              <div className='w-[650px] h-max p-4  flex items-center justify-between bg-foreground/10 rounded-lg mx-auto'>
-                <p>GOKULNATH RS </p>
-                <div className='flex gap-2'>
-                  <Dialog>
-                    <DialogTrigger>
-                      <Button>View</Button>
-                    </DialogTrigger>
-                    <DialogContent className='p-8'>
-                      <DialogHeader>
-                        <DialogTitle className='text-2xl'>Progress</DialogTitle>
-                        <DialogDescription className='text-md text-foreground'>
-                          I have completed the first 10 chapters of the book.
-                        </DialogDescription>
-                      </DialogHeader>
-                      <div className='w-full'>
-                        <DialogTitle className='text-2xl'>
-                          Proof of Work
-                        </DialogTitle>
-                        <Carousel>
-                          <CarouselContent>
-                            {[
-                              'https://firebasestorage.googleapis.com/v0/b/photo-management-app-17909.appspot.com/o/xora%2Fmusic-concert.jpg?alt=media&token=b9959dd3-2aa2-431a-a843-d948d952c095',
-                              'https://firebasestorage.googleapis.com/v0/b/photo-management-app-17909.appspot.com/o/xora%2Ftech-conf.jpg?alt=media&token=a89b25a5-86ba-49a3-8f2d-f3b00165d17d',
-                              'https://firebasestorage.googleapis.com/v0/b/photo-management-app-17909.appspot.com/o/xora%2Fart-exhibition.jpg?alt=media&token=e583f0ff-6779-41a9-b30b-8e3641294dab'
-                            ].map((item, index) => (
-                              <CarouselItem
-                                key={index}
-                                className='h-[300px] p-1 m-1 flex-shrink-0'
-                              >
-                                <img
-                                  src={item}
-                                  alt='proof'
-                                  className='w-full h-full object-cover rounded-lg'
-                                />
-                              </CarouselItem>
-                            ))}
-                          </CarouselContent>
-                          <CarouselPrevious />
-                          <CarouselNext />
-                        </Carousel>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
+              {validations.length === 0 ? (
+                <p>Loading..</p>
+              ) : (
+                validations.map((validation : any ) => {
 
-                  <Button
-                    onClick={validateProofOfWork}
-                    variant={'outline'}
-                    className='w-max border-tertiary'
-                  >
-                    Validate
-                  </Button>
-                </div>
-              </div>
+                  if (validation.userid.userid === session?.userid) {
+                    return
+                  } 
+
+                  const isUserValidated = validation.validated_by.includes(session?.userid) || validation.validation_status_bool
+
+                  return (
+                    <div className='w-[650px] h-max p-4  flex items-center justify-between bg-foreground/10 rounded-lg mx-auto'>
+                      <div>
+                        <p>{validation?.userid?.fullname}</p>
+                        <Badge
+                          variant={validation?.validation_status}
+                          className='rounded-full h-4 '
+                        >
+                          {validation?.validation_status.toUpperCase()}
+                        </Badge>
+                      </div>
+                      <div className='flex gap-2'>
+                        <Dialog>
+                          <DialogTrigger>
+                            <Button>View</Button>
+                          </DialogTrigger>
+                          <DialogContent className='p-8'>
+                            <DialogHeader>
+                              <DialogTitle className='text-2xl'>
+                                Progress
+                              </DialogTitle>
+                              <DialogDescription className='text-md text-foreground'>
+                                {validation?.progress}
+                              </DialogDescription>
+                            </DialogHeader>
+                            <div className='w-full'>
+                              <DialogTitle className='text-2xl'>
+                                Proof of Work
+                              </DialogTitle>
+                              <Carousel>
+                                <CarouselContent>
+                                  {validation?.proof_imgs?.map(
+                                    (item: any, index: number) => (
+                                      <CarouselItem
+                                        key={index}
+                                        className='h-[300px] p-1 m-1 flex-shrink-0'
+                                      >
+                                        <img
+                                          src={item}
+                                          alt='proof'
+                                          className='w-full h-full object-cover rounded-lg'
+                                        />
+                                      </CarouselItem>
+                                    )
+                                  )}
+                                </CarouselContent>
+                                <CarouselPrevious />
+                                <CarouselNext />
+                              </Carousel>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+
+                        <Button
+                          onClick={() =>
+                            validateProofOfWork(validation.userid.userid)
+                          }
+                          variant={'outline'}
+                          className='w-max border-tertiary'
+                          disabled={isUserValidated}
+                        >
+                          Validate
+                        </Button>
+                      </div>
+                    </div>
+                  )
+                })
+              )}
             </div>
           </TabsContent>
           <TabsContent value='progress-history'>
