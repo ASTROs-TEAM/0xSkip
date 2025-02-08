@@ -10,7 +10,6 @@ export async function POST(req: NextRequest) {
     try{
         await connecttodb();
         const id=v4();
-        console.log(id);
         const {email,password,username,fullname,userid}= await req.json();
         const newuser= new UserSchema(
             {
@@ -43,8 +42,8 @@ export async function PATCH(req: NextRequest) {
 
     const { habitid, join_date, userid } = await req.json();
 
-  
     if (!habitid || !join_date || !userid) {
+      console.log('Missing required fields');
       return NextResponse.json(
         { message: "Missing required fields" },
         { status: 400 }
@@ -53,6 +52,7 @@ export async function PATCH(req: NextRequest) {
 
     const habit = await HabitModel.findOne({ habitid });
     if (!habit) {
+      console.log("habit not found");
       return NextResponse.json(
         { message: "Habit not found" },
         { status: 404 }
@@ -61,8 +61,8 @@ export async function PATCH(req: NextRequest) {
 
     const userJoinDate = new Date(join_date);
     const habitStartDate = new Date(habit.startDate);
-    console.log("equal",userJoinDate >= habitStartDate)
-    if (userJoinDate <= habitStartDate) {
+    if (userJoinDate >= habitStartDate) {
+      console.log('You cannot join the habit after its start date');
       return NextResponse.json(
         { message: "You cannot join the habit after its start date" },
         { status: 400 }
@@ -70,6 +70,7 @@ export async function PATCH(req: NextRequest) {
     }
 
     if (habit.participants.includes(userid)) {
+      console.log('User is already a participant in this habit');
       return NextResponse.json(
         { message: "User is already a participant in this habit" },
         { status: 400 }
@@ -81,6 +82,7 @@ export async function PATCH(req: NextRequest) {
 
     const user = await UserModel.findOne({ userid });
     if (!user) {
+      console.log('User not found');
       return NextResponse.json(
         { message: "User not found" },
         { status: 404 }

@@ -5,6 +5,7 @@ import RightPanel from '@/components/RightPanel'
 import React, { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { useSession } from 'next-auth/react'
 
 const page = () => {
   interface Habit {
@@ -19,7 +20,8 @@ const page = () => {
   const [searchText, setSearchText] = useState('')
   const [filteredHabits, setFilteredHabits] = useState<Habit[]>([])
 
-  const userid = '1d2f6253-ca44-4bd3-924e-c47c3f8e6aeb'
+  const { data: session } = useSession()
+  const userid = session?.userid
 
   useEffect(() => {
     const fetchHabits = async () => {

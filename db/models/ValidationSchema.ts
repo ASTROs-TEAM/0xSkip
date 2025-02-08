@@ -11,8 +11,9 @@ const ValidationSchema = new mongoose.Schema({
       type: String,
       enum: ['pending', 'partial', 'validated'],
       required: true,
+      default: 'pending',
     },
-    validation_status_bool: { type: Boolean, required: true },
+    validation_status_bool: { type: Boolean, required: true, default: false },
     signed : { type: Boolean, default: false}
   });
   
