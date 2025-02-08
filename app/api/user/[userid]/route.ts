@@ -2,12 +2,14 @@ import connecttodb from "@/db/db";
 import { NextResponse,NextRequest } from "next/server";
 import UserModel from "@/db/models/UserSchema";
 
-export async function GET(req: NextRequest) {
+export async function GET(req: NextRequest,{params}: any) {
     try{
         await connecttodb();
         const pathParts = req.nextUrl.pathname.split('/');
         const userid = pathParts[pathParts.length - 1];
-        const user= await UserModel.findOne({userid:userid});
+
+        console.log("userid",userid);
+        const user = await UserModel.findOne({userid});
         console.log(user);
         if(user){
             return NextResponse.json(

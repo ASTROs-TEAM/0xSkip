@@ -12,7 +12,7 @@ interface MyHabitsCardProps
     VariantProps<typeof MyHabitsCardVariants> {
   HabitTitle: string
   HabitDesc: string
-  id: string
+  habitid: string
   noofparticipants:number
   privateHabit?: boolean
   entryPrize:string
@@ -45,7 +45,7 @@ const MyHabitsCard: FC<MyHabitsCardProps> = ({
   HabitTitle,
   HabitDesc,
   noofparticipants,
-  id,
+  habitid,
   privateHabit,
   entryPrize,
 
@@ -84,7 +84,7 @@ const MyHabitsCard: FC<MyHabitsCardProps> = ({
           </span>
         </div>
         <Link
-          href={`/dashboard/my-habits/${id}`}
+          href={`/dashboard/my-habits/${habitid}`}
           className='text-md hover:underline hover:text-tertiary  bg-transparent p-2 rounded-md flex items-center'
         >
           Update Progress
