@@ -34,19 +34,28 @@ const Page = ({ params }: any) => {
   const { sendTransaction } = useSendTransaction()
 
   const handleJoinEvent = async () => {
-    console.log(process.env.NEXT_PUBLIC_COMPANY_WALLET)
     try {
-      toast.loading('Transaction Processing..')
-      const TxnHash = await sendTransaction(
-        process.env.NEXT_PUBLIC_COMPANY_WALLET as string,
-        habitDetails.entryPrize
+      toast.promise(
+        sendTransaction(
+          process.env.NEXT_PUBLIC_COMPANY_WALLET as string,
+          habitDetails.entryPrize
+        ),
+        {
+          loading: 'Transaction Processing..',
+          success: (data) => {
+            console.log(data)
+            router.push('/dashboard/my-habits')
+            return `Joined habit successfully, hash: ${data}`
+          },
+          error: 'Error joining habit'
+        }
       )
+      // TODO: add users to habit participants
 
-      toast.success(`Joined habit successfully, hash: ${TxnHash}`)
-      router.push('/dashboard/my-habits')
+      
     } catch (err) {
       console.error('Error joining habit:', err)
-      alert('Failed to join habit. Please try again later.')
+      toast.error(`Error joining habit`)
     }
   }
 
