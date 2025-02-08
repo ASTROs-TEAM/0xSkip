@@ -27,11 +27,10 @@ import { useRouter } from 'next/navigation'
 import { convertDate } from '@/lib/utils'
 
 const page = ({ params }: any) => {
-
-  const { data: session } : any = useSession()
+  const { data: session }: any = useSession()
   const [progress, setProgress] = useState('')
   const [habits, setHabits] = useState<any>({})
-  const [validations,setValidations] = useState<Array<String>>([])
+  const [validations, setValidations] = useState<Array<String>>([])
   const [validationsOfUser, setValidationOfUser] = useState<Array<String>>([])
   const [proofOfWork, setProofOfWork] = useState<Array<String>>([])
 
@@ -40,26 +39,23 @@ const page = ({ params }: any) => {
   let userid = session?.userid
   let habitid = params.id
 
-
   useEffect(() => {
     console.log('Proof of work:', proofOfWork)
-  },[proofOfWork])
-
+  }, [proofOfWork])
 
   useEffect(() => {
     if (!userid) {
       console.log('User not logged in')
-      return 
+      return
     }
     const fetchHabits = async () => {
       try {
-
         const body = {
           habitid,
           userid,
           withValidations: true
         }
-        const response : any = await axios.post(`/api/habit/${habitid}`,body)
+        const response: any = await axios.post(`/api/habit/${habitid}`, body)
         const result = response.data
         setHabits(result)
         if (result.validations.length !== 0) {
@@ -67,16 +63,14 @@ const page = ({ params }: any) => {
           setValidations(result.validations)
           setValidationOfUser(result.validationsForUser)
         }
-          
+
         console.log('Habits fetched:', response.data)
-      } catch (err:any) {
+      } catch (err: any) {
         console.log('Error fetching habits:', err?.response?.data?.message)
       }
-
     }
     fetchHabits()
   }, [userid])
-
 
   const handleProgressAdd = async () => {
     if (!session?.userid) {
@@ -153,7 +147,7 @@ const page = ({ params }: any) => {
       <div className='flex justify-center gap-4'>
         <Dialog>
           <DialogTrigger>
-            <Button className='w-max'>Update Progress</Button>
+            <Button className='w-max bg-tertiary hover:bg-tertiary/90 text-white'>Update Your Progress</Button>
           </DialogTrigger>
           <DialogContent className='p-8'>
             <DialogHeader>
@@ -176,7 +170,7 @@ const page = ({ params }: any) => {
         </Dialog>
       </div>
       <div className='my-8'>
-        <Tabs defaultValue='progress-history' className='w-full'>
+        <Tabs defaultValue='your-progress' className='w-full'>
           <TabsList className='w-full bg-transparent border-b-[2px] border-foreground/10'>
             <TabsTrigger
               className='text-lg  data-[state=active]:border-b-tertiary  data-[state=active]:border-b-[1px]'
@@ -186,14 +180,14 @@ const page = ({ params }: any) => {
             </TabsTrigger>
             <TabsTrigger
               className='text-lg  data-[state=active]:border-b-tertiary  data-[state=active]:border-b-[1px]'
-              value='progress-history'
+              value='your-progress'
             >
-              Progress History
+              Your Progress
             </TabsTrigger>
           </TabsList>
           <TabsContent value='peer-validation' className=''>
             <div className='w-full px-10 p-5'>
-              <h2 className='font-medium text-xl'>December 30, 2024</h2>
+              <h2 className='font-medium text-xl'>Today</h2>
             </div>
             <div>
               {/* // Map this card  */}
@@ -279,71 +273,73 @@ const page = ({ params }: any) => {
               )}
             </div>
           </TabsContent>
-          <TabsContent value='progress-history'>
-            <div className='w-full px-10 p-5'>
+          <TabsContent value='your-progress'>
+            {/* <div className='w-full px-10 p-5'>
               <h2 className='font-medium text-xl'>Your Progress</h2>
-            </div>
-            {validationsOfUser.length === 0 ? (
-              <p>Loading..</p>
-            ) : (
-              validationsOfUser.map((validation: any) => (
-                <div className='w-[650px] mx-auto bg-foreground/10 px-4 py-2 rounded-lg'>
-                  <div className='w-full h-max flex items-center justify-between '>
-                    <div>
-                      <p className='text-2xl font-bricolage'>
-                        {convertDate(validation?.date_of_validation)}
-                      </p>
-                      <Badge
-                        variant={validation?.validation_status}
-                        className='rounded-full h-4 '
-                      >
-                        {validation?.validation_status.toUpperCase()}
-                      </Badge>
-                    </div>
-                    <div className='flex gap-2'>
-                      <Dialog>
-                        <DialogTrigger>
-                          <Button>View</Button>
-                        </DialogTrigger>
-                        <DialogContent className='p-8'>
-                          <DialogHeader>
-                            <DialogTitle className='text-2xl'>
-                              Progress
-                            </DialogTitle>
-                            <DialogDescription className='text-md text-foreground'>
-                              {validation?.progress}
-                            </DialogDescription>
-                          </DialogHeader>
-                          <div className='w-full'>
-                            <DialogTitle className='text-2xl'>
-                              Proof of Work
-                            </DialogTitle>
-                            <Carousel>
-                              <CarouselContent>
-                                {validation?.proof_imgs.map((item, index) => (
-                                  <CarouselItem
-                                    key={index}
-                                    className=' h-[300px] p-1 m-1 flex-shrink-0'
-                                  >
-                                    <img
-                                      src={item}
-                                      alt='proof'
-                                      className='w-full h-full object-cover rounded-lg'
-                                    />
-                                  </CarouselItem>
-                                ))}
-                              </CarouselContent>
-                              <CarouselPrevious />
-                              <CarouselNext />
-                            </Carousel>
-                          </div>
-                        </DialogContent>
-                      </Dialog>
+            </div> */}
+            <div className='m-2 my-6'>
+              {validationsOfUser.length === 0 ? (
+                <p className='text-center'>Loading..</p>
+              ) : (
+                validationsOfUser.map((validation: any) => (
+                  <div className='w-[650px] mx-auto bg-foreground/10 px-4 py-2 rounded-lg'>
+                    <div className='w-full h-max flex items-center justify-between '>
+                      <div>
+                        <p className='text-2xl font-bricolage'>
+                          {convertDate(validation?.date_of_validation)}
+                        </p>
+                        <Badge
+                          variant={validation?.validation_status}
+                          className='rounded-full h-4 '
+                        >
+                          {validation?.validation_status.toUpperCase()}
+                        </Badge>
+                      </div>
+                      <div className='flex gap-2'>
+                        <Dialog>
+                          <DialogTrigger>
+                            <Button>View</Button>
+                          </DialogTrigger>
+                          <DialogContent className='p-8'>
+                            <DialogHeader>
+                              <DialogTitle className='text-2xl'>
+                                Progress
+                              </DialogTitle>
+                              <DialogDescription className='text-md text-foreground'>
+                                {validation?.progress}
+                              </DialogDescription>
+                            </DialogHeader>
+                            <div className='w-full'>
+                              <DialogTitle className='text-2xl'>
+                                Proof of Work
+                              </DialogTitle>
+                              <Carousel>
+                                <CarouselContent>
+                                  {validation?.proof_imgs.map((item, index) => (
+                                    <CarouselItem
+                                      key={index}
+                                      className=' h-[300px] p-1 m-1 flex-shrink-0'
+                                    >
+                                      <img
+                                        src={item}
+                                        alt='proof'
+                                        className='w-full h-full object-cover rounded-lg'
+                                      />
+                                    </CarouselItem>
+                                  ))}
+                                </CarouselContent>
+                                <CarouselPrevious />
+                                <CarouselNext />
+                              </Carousel>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))
-            )}
+                ))
+              )}
+            </div>
           </TabsContent>
         </Tabs>
       </div>
