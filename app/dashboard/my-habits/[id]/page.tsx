@@ -34,6 +34,7 @@ const page = ({ params }: any) => {
   const [validations, setValidations] = useState<Array<String>>([])
   const [validationsOfUser, setValidationOfUser] = useState<Array<String>>([])
   const [proofOfWork, setProofOfWork] = useState<Array<String>>([])
+  const [validationStatus, setValidationStatus] = useState<boolean>(false)
 
   const router = useRouter()
 
@@ -66,6 +67,20 @@ const page = ({ params }: any) => {
         }
 
         console.log('Habits fetched:', response.data)
+        console.log('validation for user', result.validationsForUser)
+        console.log(
+          'validation date :',
+          result.validationsForUser[0].date_of_validation
+        )
+        console.log('today date :', new Date().toISOString().slice(0, 10))
+        if (
+          new Date(result.validationsForUser[0].date_of_validation)
+            .toISOString()
+            .slice(0, 10) === new Date().toISOString().slice(0, 10)
+        ) {
+          console.log('already validated')
+          setValidationStatus(true)
+        }
       } catch (err: any) {
         console.log('Error fetching habits:', err?.response?.data?.message)
       }
@@ -147,9 +162,12 @@ const page = ({ params }: any) => {
       </div>
       <div className='flex justify-center gap-4'>
         <Dialog>
-          <DialogTrigger>
-            <Button className='w-max bg-tertiary hover:bg-tertiary/90 text-foreground'>
-              Update Your Progress
+          <DialogTrigger disabled={validationStatus}>
+            <Button
+              className='w-max bg-tertiary hover:bg-tertiary/90 text-white'
+              disabled={validationStatus}
+            >
+              {validationStatus ? 'Progress Updated' : 'Add Progress'}
             </Button>
           </DialogTrigger>
           <DialogContent className='p-8'>
