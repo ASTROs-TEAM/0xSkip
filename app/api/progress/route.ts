@@ -1,4 +1,5 @@
 import connecttodb from "@/db/db";
+import HabitParticipationModel from "@/db/models/HabitParticipationSchema";
 import ValidationModel from "@/db/models/ValidationSchema";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -23,6 +24,13 @@ export async function POST(req: NextRequest) {
       });
       
       await validate.save();
+
+      await HabitParticipationModel.findOneAndUpdate({
+        habitId: data.habitid,
+        userId:  data.userid,
+      }, {
+        $inc: { daysChecked: 1}
+      })
       return NextResponse.json(
         { message: "Progress added" },
         { status: 200 }
