@@ -14,8 +14,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 // import { useSession } from 'next-auth/react'
 import { useSession } from 'next-auth/react'
-import { toast } from "sonner"
-
+import { toast } from 'sonner'
 
 const Page = () => {
   interface Habit {
@@ -23,43 +22,43 @@ const Page = () => {
     description: string
     participants: Array<string>
     entryPrize: string
-    habitid: string;
+    habitid: string
+    startDate: string
   }
 
   const [inviteCode, setInviteCode] = useState('')
   const [habits, setHabits] = useState<Habit[]>([])
 
   const { data: session }: any = useSession()
-  const [searchText, setSearchText] = useState("");
-  const [filteredHabits, setFilteredHabits] = useState<Habit[]>([]);
+  const [searchText, setSearchText] = useState('')
+  const [filteredHabits, setFilteredHabits] = useState<Habit[]>([])
 
   useEffect(() => {
     const fetchHabits = async () => {
       try {
-        const res = await fetch("/api/habit");
-        const data = await res.json();
-        setHabits(data.habits || []);
-        setFilteredHabits(data.habits || []);
+        const res = await fetch('/api/habit')
+        const data = await res.json()
+        setHabits(data.habits || [])
+        setFilteredHabits(data.habits || [])
       } catch (err) {
         toast('Error fecthing habits')
         console.error('Error fetching habits:', err)
       }
     }
-    
-    fetchHabits();
-  }, []);
-  
+
+    fetchHabits()
+  }, [])
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value);
-  };
+    setSearchText(e.target.value)
+  }
 
   const filteringhabit = () => {
     const filteredData = habits.filter((habit) =>
       habit.title.toLowerCase().includes(searchText.toLowerCase())
-    );
-    setFilteredHabits(filteredData);
-    
-  };
+    )
+    setFilteredHabits(filteredData)
+  }
 
   const handleJoin = async () => {
     if (!inviteCode) {
@@ -90,7 +89,7 @@ const Page = () => {
   }
 
   return (
-    <div className='flex flex-col text-white h-full overflow-y-auto py-6 px-4'>
+    <div className='flex flex-col text-foreground h-full overflow-y-auto py-6 px-4'>
       <div className='mb-4 text-foreground/80'>
         <h1 className='text-4xl font-bold pl-1'>Explore Habits</h1>
         <p className='text-foreground/60 pl-2'>
@@ -98,17 +97,17 @@ const Page = () => {
           and challenge yourself.
         </p>
       </div>
-      <div className="flex flex-wrap gap-2 mb-4">
+      <div className='flex flex-wrap gap-2 mb-4'>
         <Input
-          placeholder="Search Habits"
-          className="w-full sm:w-[500px]"
+          placeholder='Search Habits'
+          className='w-full sm:w-[500px]'
           onChange={handleSearch}
           value={searchText}
         />
-        <Button className="w-full sm:w-auto" onClick={filteringhabit}>
+        <Button className='w-full sm:w-auto' onClick={filteringhabit}>
           Search
         </Button>
-        
+
         <Dialog>
           <DialogTrigger>
             <Button
@@ -136,18 +135,27 @@ const Page = () => {
           </DialogContent>
         </Dialog>
       </div>
-      <div className="flex flex-wrap gap-2">
+      <div className='flex flex-wrap gap-2'>
         {filteredHabits.length > 0 ? (
-          filteredHabits.map((habit, index) => (
-            <Explorehabits
-              key={index}
-              title={habit.title}
-              description={habit.description}
-              participants={habit.participants.length}
-              entryPrize={habit.entryPrize}
-              habitid={habit.habitid}
-            />
-          ))
+          filteredHabits.map((habit, index) => {
+            if (
+              new Date(habit.startDate).toDateString() >
+              new Date().toDateString()
+            ) {
+              return
+            }
+
+            return (
+              <Explorehabits
+                key={index}
+                title={habit.title}
+                description={habit.description}
+                participants={habit.participants.length}
+                entryPrize={habit.entryPrize}
+                habitid={habit.habitid}
+              />
+            )
+          })
         ) : (
           <p className='text-gray-500'>No habits found.</p>
         )}

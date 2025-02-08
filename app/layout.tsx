@@ -28,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body
-        className={`${inter.className} ${bricolage.variable} antialiased dark mx-[15%]`}
+        className={`${inter.className} ${bricolage.variable} antialiased mx-[12%]`}
       >
         <SessionProvider>{children}</SessionProvider>
         <Toaster />

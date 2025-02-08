@@ -13,9 +13,9 @@ interface MyHabitsCardProps
   HabitTitle: string
   HabitDesc: string
   id: string
-  noofparticipants:number
+  noofparticipants: number
   privateHabit?: boolean
-  entryPrize:string
+  entryPrize: string
 }
 
 const MyHabitsCardVariants = cva(
@@ -23,7 +23,7 @@ const MyHabitsCardVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-background text-white',
+        default: 'bg-background text-foreground',
         outline: 'border border-gray-300 bg-white text-gray-900'
       },
       size: {
@@ -71,7 +71,7 @@ const MyHabitsCard: FC<MyHabitsCardProps> = ({
         <div className='flex items-center gap-2 text-gray-400'>
           <span className='flex items-center gap-1'>
             <Image src={personicon} alt='person icon' width={16} height={16} />
-           {noofparticipants}
+            {noofparticipants}
           </span>
           <span className='flex items-center gap-1'>
             <Image

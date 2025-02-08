@@ -8,10 +8,6 @@ export async function POST(req: NextRequest) {
     try {
       await connecttodb();
       const data = await req.json();
-      // const validProofImgs = data.proof_imgs.filter(img => img.trim() !== '');
-      // if (validProofImgs.length === 0) {
-      //   return NextResponse.json({ error: "No valid proof of work images provided" }, { status: 400 });
-      // }
       
       const validate = new ValidationModel({
         habitid: data.habitid,
