@@ -25,6 +25,7 @@ import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { convertDate } from '@/lib/utils'
+import { DialogClose } from '@radix-ui/react-dialog'
 
 const page = ({ params }: any) => {
   const { data: session }: any = useSession()
@@ -147,7 +148,9 @@ const page = ({ params }: any) => {
       <div className='flex justify-center gap-4'>
         <Dialog>
           <DialogTrigger>
-            <Button className='w-max bg-tertiary hover:bg-tertiary/90 text-white'>Update Your Progress</Button>
+            <Button className='w-max bg-tertiary hover:bg-tertiary/90 text-foreground'>
+              Update Your Progress
+            </Button>
           </DialogTrigger>
           <DialogContent className='p-8'>
             <DialogHeader>
@@ -199,12 +202,19 @@ const page = ({ params }: any) => {
                     return
                   }
 
+                  if (
+                    new Date(validation.date_of_validation).toDateString() !==
+                    new Date().toDateString()
+                  ) {
+                    return
+                  }
+
                   const isUserValidated =
                     validation.validated_by.includes(session?.userid) ||
                     validation.validation_status_bool
 
                   return (
-                    <div className='w-[650px] h-max p-4  flex items-center justify-between bg-foreground/10 rounded-lg mx-auto'>
+                    <div className='w-[650px] h-max p-4 my-4 flex items-center justify-between bg-foreground/10 rounded-lg mx-auto'>
                       <div>
                         <p>{validation?.userid?.fullname}</p>
                         <Badge
@@ -282,7 +292,7 @@ const page = ({ params }: any) => {
                 <p className='text-center'>Loading..</p>
               ) : (
                 validationsOfUser.map((validation: any) => (
-                  <div className='w-[650px] mx-auto bg-foreground/10 px-4 py-2 rounded-lg'>
+                  <div className='w-[650px] mx-auto bg-foreground/10 px-4 py-2 rounded-lg my-4'>
                     <div className='w-full h-max flex items-center justify-between '>
                       <div>
                         <p className='text-2xl font-bricolage'>

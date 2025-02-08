@@ -14,6 +14,7 @@ const page = () => {
     description: string
     participants: Array<string>
     entryPrize: string
+    startDate: string
   }
 
   const [myhabits, setmyHabits] = useState<Habit[]>([])
@@ -60,7 +61,7 @@ const page = () => {
 
   return (
     <section className='grid grid-cols-[65%_35%]'>
-      <div className='flex flex-col text-white h-full overflow-y-auto py-6 px-4'>
+      <div className='flex flex-col text-foreground h-full overflow-y-auto py-6 px-4'>
         <div className='my-1 text-foreground/80'>
           <h1 className='text-4xl font-bold'>Your Habits</h1>
         </div>
@@ -77,16 +78,24 @@ const page = () => {
         </div>
         <div className='flex flex-col gap-1 p-2'>
           {filteredHabits.length > 0 ? (
-            filteredHabits.map((item, index) => (
-              <MyHabitsCard
-                key={index}
-                id={item.habitid}
-                HabitTitle={item.title}
-                HabitDesc={item.description}
-                noofparticipants={item.participants.length}
-                entryPrize={item.entryPrize}
-              />
-            ))
+            filteredHabits.map((item, index) => {
+              if (
+                new Date(item.startDate).toDateString() >
+                new Date().toDateString()
+              ) {
+                return
+              }
+              return (
+                <MyHabitsCard
+                  key={index}
+                  id={item.habitid}
+                  HabitTitle={item.title}
+                  HabitDesc={item.description}
+                  noofparticipants={item.participants.length}
+                  entryPrize={item.entryPrize}
+                />
+              )
+            })
           ) : (
             <p>No habits found</p>
           )}

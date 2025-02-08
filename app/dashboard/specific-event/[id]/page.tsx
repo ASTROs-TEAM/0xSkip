@@ -33,7 +33,7 @@ const Page = ({ params }: any) => {
     return new Date(isoDate).toISOString().split('T')[0]
   }
 
-  const { data:session }  = useSession()
+  const { data: session } = useSession()
 
   const { sendTransaction } = useSendTransaction()
 
@@ -51,24 +51,21 @@ const Page = ({ params }: any) => {
         }
       )
 
-      async function handleSuccess(data:string){
-        const TxnHash = data;
+      async function handleSuccess(data: string) {
+        const TxnHash = data
         const body = {
           habitid: id,
           join_date: Date.now(),
           userid: session?.userid
         }
 
-        console.log("Body :",body)
+        console.log('Body :', body)
         const res = await axios.patch(`/api/user`, body)
 
         router.push('/dashboard/my-habits')
         return `${res.data.message}`
       }
       // TODO: add users to habit participants
-
-      
-      
     } catch (err) {
       console.error('Error joining habit:', err.message || err)
       toast.error(`Error joining habit`)
@@ -102,7 +99,7 @@ const Page = ({ params }: any) => {
   }
 
   return (
-    <div className='flex flex-col text-white h-full py-6 px-4'>
+    <div className='flex flex-col text-foreground h-full py-6 px-4'>
       <div className='mb-6 text-foreground/80'>
         <h1 className='text-4xl font-bold pl-1 mb-2'>{habitDetails.title}</h1>
         <p className='text-foreground/60 pl-2'>{habitDetails.description}</p>

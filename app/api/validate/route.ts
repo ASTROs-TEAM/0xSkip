@@ -1,4 +1,5 @@
 import connecttodb from "@/db/db";
+import HabitParticipationModel from "@/db/models/HabitParticipationSchema";
 import ValidationModel from "@/db/models/ValidationSchema";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -36,8 +37,20 @@ export async function PATCH(req: NextRequest) {
         if (validateWork.validated_by.length === 2) {
           validateWork.validation_status = "partial";
         } else if (validateWork.validated_by.length === 3) {
+
+          
           validateWork.validation_status = "validated";
           validateWork.validation_status_bool = true;
+          await HabitParticipationModel.findOneAndUpdate(
+            {
+              habitId: habitid,
+              userId: userid
+            },
+            {
+              $inc: { daysValidated: 1 }
+            }
+          )
+          
         }
   
         await validateWork.save(); 

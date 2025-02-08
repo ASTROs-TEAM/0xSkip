@@ -37,7 +37,7 @@ const RightPanel = () => {
   }
 
   return (
-    <div className='skicky left-0 top-20 p-4 flex flex-col h-[90vh] w-full border-l-[1px] border-white/10 text-white'>
+    <div className='skicky left-0 top-20 p-4 flex flex-col h-[90vh] w-full border-l-[1px] border-white/10 text-foreground'>
       <Calendar
         className={'text-black w-full invert p-2 rounded-lg'}
         value={date}

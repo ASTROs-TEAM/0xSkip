@@ -47,7 +47,7 @@ const SendETHComponent: React.FC = () => {
           Send ETH
         </button>
       </div>
-      {txHash && <p className='text-white'>Transaction Hash: {txHash}</p>}
+      {txHash && <p className='text-foreground'>Transaction Hash: {txHash}</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   )
