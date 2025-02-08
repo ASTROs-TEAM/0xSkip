@@ -12,6 +12,9 @@ import {
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
+import useSendTransaction from '@/hooks/useSendTransaction'
+import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
 type Props = {
   params: {
@@ -19,12 +22,32 @@ type Props = {
   }
 }
 
-const Page = ({ params }: Props) => {
+const Page = ({ params }: any) => {
   const { id } = params
   const [name, setname] = useState('')
+  const router = useRouter()
   const [habitDetails, setHabitDetails] = useState<any>(null)
   const formatDate = (isoDate: string): string => {
     return new Date(isoDate).toISOString().split('T')[0]
+  }
+
+  const { sendTransaction } = useSendTransaction()
+
+  const handleJoinEvent = async () => {
+    console.log(process.env.NEXT_PUBLIC_COMPANY_WALLET)
+    try {
+      toast.loading('Transaction Processing..')
+      const TxnHash = await sendTransaction(
+        process.env.NEXT_PUBLIC_COMPANY_WALLET as string,
+        habitDetails.entryPrize
+      )
+
+      toast.success(`Joined habit successfully, hash: ${TxnHash}`)
+      router.push('/dashboard/my-habits')
+    } catch (err) {
+      console.error('Error joining habit:', err)
+      alert('Failed to join habit. Please try again later.')
+    }
   }
 
   useEffect(() => {
@@ -127,7 +150,9 @@ const Page = ({ params }: Props) => {
                   Cancel
                 </AlertDialogCancel>
                 <AlertDialogAction className=''>
-                  <Button>Submit</Button>
+                  <Button onClick={() => handleJoinEvent()}>
+                    Pay {habitDetails.entryPrize} ETH
+                  </Button>
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>

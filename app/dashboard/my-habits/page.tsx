@@ -26,7 +26,7 @@ const page = () => {
 
     const fetchHabits = async () => {
       try {
-        const res = await fetch(`/api/user/${session?.userid }`);
+        const res = await fetch(`/api/user/${session?.user }`);
         const data = await res.json();
         console.log(data);
         console.log(data.user.current_habits);
