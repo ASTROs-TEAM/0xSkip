@@ -28,6 +28,7 @@ export async function POST(req: NextRequest) {
         { status: 200 }
       );
     } catch (err) {
+      console.log(err);
       return NextResponse.json(
         { error: err},
         { status: 400 }
