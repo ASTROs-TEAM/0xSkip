@@ -26,6 +26,7 @@ import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 
 const page = ({ params }: any) => {
+
   const { data: session } : any = useSession()
   const [progress, setProgress] = useState('')
   const [habits, setHabits] = useState<any>({})
@@ -37,6 +38,7 @@ const page = ({ params }: any) => {
 
   let userid = session?.userid
   let habitid = params.id
+
 
   useEffect(() => {
     if (!userid) {
@@ -64,9 +66,11 @@ const page = ({ params }: any) => {
       } catch (err:any) {
         console.log('Error fetching habits:', err?.response?.data?.message)
       }
+
     }
     fetchHabits()
   }, [userid])
+
 
   const handleProgressAdd = async () => {
     if (!session?.userid) {
@@ -130,7 +134,6 @@ const page = ({ params }: any) => {
       console.error('Error validating proof of work:', error)
     }
   }
-
   return (
     <div>
       <div className='my-8'>
@@ -276,8 +279,8 @@ const page = ({ params }: any) => {
             <div className='w-[650px] mx-auto bg-foreground/10 px-4 py-2 rounded-lg'>
               <div className='w-full h-max flex items-center justify-between '>
                 <div>
-                  <p className='text-2xl font-bricolage'>Learn JavaScript</p>
-                  <Badge variant={'pending'} className='rounded-full h-4 '>
+                  <p className="text-2xl font-bricolage">Learn JavaScript</p>
+                  <Badge variant={"pending"} className="rounded-full h-4 ">
                     Pending
                   </Badge>
                 </div>
@@ -288,8 +291,8 @@ const page = ({ params }: any) => {
                     </DialogTrigger>
                     <DialogContent className='p-8'>
                       <DialogHeader>
-                        <DialogTitle className='text-2xl'>Progress</DialogTitle>
-                        <DialogDescription className='text-md text-foreground'>
+                        <DialogTitle className="text-2xl">Progress</DialogTitle>
+                        <DialogDescription className="text-md text-foreground">
                           I have completed the first 10 chapters of the book. I
                           have completed the first 10 chapters of the book. I
                           have completed the first 10 chapters of the book. I
@@ -304,9 +307,9 @@ const page = ({ params }: any) => {
                         <Carousel>
                           <CarouselContent>
                             {[
-                              'https://firebasestorage.googleapis.com/v0/b/photo-management-app-17909.appspot.com/o/xora%2Fmusic-concert.jpg?alt=media&token=b9959dd3-2aa2-431a-a843-d948d952c095',
-                              'https://firebasestorage.googleapis.com/v0/b/photo-management-app-17909.appspot.com/o/xora%2Ftech-conf.jpg?alt=media&token=a89b25a5-86ba-49a3-8f2d-f3b00165d17d',
-                              'https://firebasestorage.googleapis.com/v0/b/photo-management-app-17909.appspot.com/o/xora%2Fart-exhibition.jpg?alt=media&token=e583f0ff-6779-41a9-b30b-8e3641294dab'
+                              "https://firebasestorage.googleapis.com/v0/b/photo-management-app-17909.appspot.com/o/xora%2Fmusic-concert.jpg?alt=media&token=b9959dd3-2aa2-431a-a843-d948d952c095",
+                              "https://firebasestorage.googleapis.com/v0/b/photo-management-app-17909.appspot.com/o/xora%2Ftech-conf.jpg?alt=media&token=a89b25a5-86ba-49a3-8f2d-f3b00165d17d",
+                              "https://firebasestorage.googleapis.com/v0/b/photo-management-app-17909.appspot.com/o/xora%2Fart-exhibition.jpg?alt=media&token=e583f0ff-6779-41a9-b30b-8e3641294dab",
                             ].map((item, index) => (
                               <CarouselItem
                                 key={index}
@@ -328,8 +331,8 @@ const page = ({ params }: any) => {
                   </Dialog>
                 </div>
               </div>
-              <div className='mt-2'>
-                <h1 className='text-end'>30/12/2024</h1>
+              <div className="mt-2">
+                <h1 className="text-end">30/12/2024</h1>
               </div>
             </div>
           </TabsContent>

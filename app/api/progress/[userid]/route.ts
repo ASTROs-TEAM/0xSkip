@@ -19,6 +19,8 @@ export async function GET(req: NextRequest) {
     const myvalidation = await ValidationModel.findOne({
       userid: userid,
       date_of_validation: { $gte: startOfDay, $lte: endOfDay },
+      proof_imgs : { $ne: [] }
+
     });
 
     if (!myvalidation) {

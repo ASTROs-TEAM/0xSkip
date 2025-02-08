@@ -1,40 +1,38 @@
 'use server'
 import { cloudinary } from '@/config/cloudinary';
-import { UploadApiResponse, UploadApiErrorResponse } from 'cloudinary'
+import { UploadApiResponse, UploadApiErrorResponse } from 'cloudinary';
 
 type UploadResponse =
-  | { success: true; result?: UploadApiResponse }
-  | { success: false; error: UploadApiErrorResponse }
+  | { success: true; results: string[] } 
+  | { success: false; error: UploadApiErrorResponse };
 
-export const uploadToCloudinary = async (
-  fileName: string,
-  formData: FormData
-): Promise<UploadResponse> => {
-  const file = formData.get('file') as File
+export const uploadToCloudinary = async (formData: FormData): Promise<UploadResponse> => {
+  try {
+    const files = formData.getAll('files') as File[];
 
-  const fileBuffer = await file.arrayBuffer()
+    if (!files.length) {
+      return { success: false, error: { message: 'No files received' } as UploadApiErrorResponse };
+    }
 
-  const mimeType = file.type
-  const encoding = 'base64'
-  const base64Data = Buffer.from(fileBuffer).toString('base64')
+    const uploadPromises = files.map(async (file) => {
+      const fileBuffer = await file.arrayBuffer();
+      const base64Data = Buffer.from(fileBuffer).toString('base64');
+      const fileUri = `data:${file.type};base64,${base64Data}`;
 
-  // this will be used to upload the file to cloudinary
-  const fileUri = 'data:' + mimeType + ';' + encoding + ',' + base64Data
-
-  return new Promise((resolve, reject) => {
-    cloudinary.uploader
-      .upload(fileUri, {
+      const result = await cloudinary.uploader.upload(fileUri, {
         invalidate: true,
         resource_type: 'auto',
-        filename_override: fileName,
         folder: 'event-images',
         use_filename: true
-      })
-      .then((result) => {
-        resolve({ success: true, result })
-      })
-      .catch((error) => {
-        reject({ success: false, error })
-      })
-  })
-}
+      });
+
+      return result.secure_url; 
+    });
+
+    const results = await Promise.all(uploadPromises);
+
+    return { success: true, results };
+  } catch (error) {
+    return { success: false, error: error as UploadApiErrorResponse };
+  }
+};
