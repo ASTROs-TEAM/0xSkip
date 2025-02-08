@@ -12,36 +12,39 @@ export async function PATCH(req: NextRequest) {
       const endOfDay = new Date();
       endOfDay.setHours(23, 59, 59, 999);
   
-      const data = await req.json();
+      const { habitid, userid, validatorUserId } = await req.json();
+
+      console.log("habitId: ",habitid, "user: ", userid, " validator :", validatorUserId);
   
-      const habit = await ValidationModel.findOne({
-        habitid: data.habitid,
+      const validateWork = await ValidationModel.findOne({
+        habitid,
         date_of_validation: { $gte: startOfDay, $lte: endOfDay },
-        userid: data.userid,
+        userid,
       });
   
-      if (!habit) {
+      if (!validateWork) {
+        console.log("habit not found");
         return NextResponse.json(
           { message: "Habit not found for the given date and user" },
           { status: 404 }
         );
       }
   
-      if (!habit.validated_by.includes(data.validatorUserId)) {
-        habit.validated_by.push(data.validatorUserId);
+      if (!validateWork.validated_by.includes(validatorUserId)) {
+        validateWork.validated_by.push(validatorUserId);
   
-        if (habit.validated_by.length === 2) {
-          habit.validation_status = "partial";
-        } else if (habit.validated_by.length === 3) {
-          habit.validation_status = "validated";
-          habit.validation_status_bool = true;
+        if (validateWork.validated_by.length === 2) {
+          validateWork.validation_status = "partial";
+        } else if (validateWork.validated_by.length === 3) {
+          validateWork.validation_status = "validated";
+          validateWork.validation_status_bool = true;
         }
   
-        await habit.save(); 
+        await validateWork.save(); 
         return NextResponse.json(
-          { message: "Habit validated successfully", habit },
+          { message: 'Progress validated successfully', validateWork },
           { status: 200 }
-        );
+        )
       } else {
         return NextResponse.json(
           { message: "User has already validated this habit" },

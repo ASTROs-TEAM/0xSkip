@@ -27,12 +27,15 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  /*
+  POST ---> create habit
+  Create Habit Page
+  */
   try {
     await connecttodb()
 
     const data = await req.json()
     const userid=data.userid;
-    console.log(userid);
     
     const {
       title,

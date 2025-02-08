@@ -1,5 +1,6 @@
 import connecttodb from "@/db/db";
 import HabitModel from "@/db/models/HabitSchema";
+import ValidationModel from "@/db/models/ValidationSchema";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -92,5 +93,55 @@ export async function PATCH(req: NextRequest) {
       { message: "Error updating habit", error: err },
       { status: 500 }
     );
+  }
+}
+
+export async function POST(req: NextRequest) {
+  /* 
+  POST  ---> Particular Habit Details With validations
+  */
+  try {
+    await connecttodb()
+
+    const body = await req.json()
+    const { withValidations = false, habitid, userid } = body
+
+
+    if (!habitid || !userid) {
+      return NextResponse.json({ message: 'Missing required fields' }, { status: 400 })
+    }
+
+    const habit = await HabitModel.findOne({ habitid: habitid })
+
+    if (!habit) {
+      return NextResponse.json({ message: 'Habit not found' }, { status: 500 })
+    }
+
+    var validations;
+    var validationsForUser;
+
+    if (withValidations) {
+      validations = await ValidationModel.find({ habitid: habitid }).populate({
+        path: 'userid',
+        model: 'User',
+        localField: 'userid',
+        foreignField: 'userid',
+      })
+
+      validationsForUser = validations.filter(
+        (validation) => validation.userid.userid === userid
+      )
+    }
+
+    return NextResponse.json(
+      { message: 'Habit retrieved', habit: habit , validations: validations, validationsForUser: validationsForUser},
+      { status: 200 }
+    )
+  } catch (err) {
+    console.log(err)
+    return NextResponse.json(
+      { message: 'Error finding habit', error: err },
+      { status: 500 }
+    )
   }
 }

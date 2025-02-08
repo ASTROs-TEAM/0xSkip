@@ -12,7 +12,11 @@ const Header = ({ dashboard }: { dashboard?: boolean }) => {
   const { data: session } = useSession()
 
   const handleSignIn = async () => {
-    await signIn('google', { redirectTo: '/dashboard/my-habits' })
+    try {
+      await signIn('google', { redirectTo: '/dashboard/my-habits' })
+    } catch (error) {
+      console.log("Here ",error)
+    }
   }
 
   return (
