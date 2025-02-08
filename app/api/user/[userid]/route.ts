@@ -8,7 +8,6 @@ export async function GET(req: NextRequest) {
         const pathParts = req.nextUrl.pathname.split('/');
         const userid = pathParts[pathParts.length - 1];
         const user= await UserModel.findOne({userid:userid});
-        console.log(user);
         if(user){
             return NextResponse.json(
                 { message: "User data retrieved", user:user },

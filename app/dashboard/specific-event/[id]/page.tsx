@@ -15,6 +15,8 @@ import { Button } from '@/components/ui/button'
 import useSendTransaction from '@/hooks/useSendTransaction'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
+import axios from 'axios'
+import { useSession } from 'next-auth/react'
 
 type Props = {
   params: {
@@ -31,6 +33,8 @@ const Page = ({ params }: any) => {
     return new Date(isoDate).toISOString().split('T')[0]
   }
 
+  const { data:session }  = useSession()
+
   const { sendTransaction } = useSendTransaction()
 
   const handleJoinEvent = async () => {
@@ -42,19 +46,31 @@ const Page = ({ params }: any) => {
         ),
         {
           loading: 'Transaction Processing..',
-          success: (data) => {
-            console.log(data)
-            router.push('/dashboard/my-habits')
-            return `Joined habit successfully, hash: ${data}`
-          },
+          success: (data) => handleSuccess(data as string),
           error: 'Error joining habit'
         }
       )
+
+      async function handleSuccess(data:string){
+        const TxnHash = data;
+        const body = {
+          habitid: id,
+          join_date: Date.now(),
+          userid: session?.userid
+        }
+
+        console.log("Body :",body)
+        const res = await axios.patch(`/api/user`, body)
+
+        router.push('/dashboard/my-habits')
+        return `${res.data.message}`
+      }
       // TODO: add users to habit participants
 
       
+      
     } catch (err) {
-      console.error('Error joining habit:', err)
+      console.error('Error joining habit:', err.message || err)
       toast.error(`Error joining habit`)
     }
   }
