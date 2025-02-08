@@ -22,17 +22,19 @@ import {
 import { Textarea } from '@/components/ui/textarea'
 import ImageUploader from '@/components/ImageUploader'
 import { Badge } from '@/components/ui/badge'
+import { toast } from 'sonner'
 
 const page = () => {
   const { data: session } = useSession()
 
   const [progress, setProgress] = useState('')
-  const [proofOfWork, setProofOfWork] = useState<Array<String>>([''])
+  const [proofOfWork, setProofOfWork] = useState<Array<String>>([])
 
   useEffect(() => {
     console.log('Proof of work', proofOfWork)
   }, [proofOfWork])
 
+  // change to the current habit id
   const habitid = 'e54ee2f4-abb1-41c0-b680-902c086de976'
 
   const handleProgressAdd = async () => {
@@ -41,13 +43,11 @@ const page = () => {
       return
     }
 
-    
-    const { userid } = session
 
     try {
       const response = await axios.post('/api/progress', {
         habitid,
-        userid,
+        userid : session?.userid,
         progress,
         proof_imgs: proofOfWork
       })
@@ -60,6 +60,47 @@ const page = () => {
     } catch (error) {
       console.error('Error during API call:', error)
     }
+  }
+
+  const validateProofOfWork = async () => {
+    const habitid = 'e54ee2f4-abb1-41c0-b680-902c086de976'
+    const userid = '857cc48a-059c-4491-9073-e7a3b238a645'
+
+
+    if (!session?.userid) {
+      toast.error('User not logged in')
+      return
+    }
+
+    const validatorUserId = session?.userid
+    
+    try {
+
+      if (userid === validatorUserId) {
+        toast.error('User cannot validate their own proof of work')
+        return
+      }
+      
+      toast.promise(
+        axios.patch('/api/validate', {
+          habitid,
+          userid,
+          validatorUserId,
+        }),
+        {
+          loading: 'Validating proof of work',
+          success: (data) => {
+            console.log('Proof of work validated:', data)
+            return 'Progress validated'
+          },
+          error: 'Error validating proof of work'
+        }
+      )
+
+    } catch (error) {
+      console.error('Error validating proof of work:', error)
+    }
+
   }
 
   return (
@@ -165,7 +206,11 @@ const page = () => {
                     </DialogContent>
                   </Dialog>
 
-                  <Button variant={'outline'} className='w-max border-tertiary'>
+                  <Button
+                    onClick={validateProofOfWork}
+                    variant={'outline'}
+                    className='w-max border-tertiary'
+                  >
                     Validate
                   </Button>
                 </div>
