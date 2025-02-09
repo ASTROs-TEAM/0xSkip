@@ -25,6 +25,7 @@ const page = () => {
   const [Loading, setLoading] = useState(true);
 
   const { data: session } = useSession();
+  // @ts-ignore
   const userid = session?.userid;
   useEffect(() => {
     const fetchHabits = async () => {
