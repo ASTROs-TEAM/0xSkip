@@ -16,6 +16,8 @@ const page = () => {
     participants: Array<string>;
     entryPrize: string;
     startDate: string;
+    privatehabit: boolean;
+    invite_code: number;
   }
 
   const [myhabits, setmyHabits] = useState<Habit[]>([]);
@@ -54,6 +56,9 @@ const page = () => {
 
     fetchHabits();
   }, [userid]);
+
+  console.log("myhabits", myhabits);
+ 
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
@@ -105,6 +110,8 @@ const page = () => {
                     HabitDesc={item.description}
                     noofparticipants={item.participants.length}
                     entryPrize={item.entryPrize}
+                    privateHabit={item.privatehabit}
+                    invite_code = {item.invite_code}
                   />
                 );
               })

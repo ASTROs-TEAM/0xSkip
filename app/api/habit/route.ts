@@ -1,6 +1,6 @@
-import connecttodb from "@/db/db";
-import { NextRequest, NextResponse } from "next/server";
-import HabitModel from "@/db/models/HabitSchema";
+import connecttodb from '@/db/db'
+import { NextRequest, NextResponse } from 'next/server'
+import HabitModel from '@/db/models/HabitSchema'
 import { v4 as uuidv4 } from 'uuid'
 import UserModel from '@/db/models/UserSchema'
 import HabitParticipationModel from '@/db/models/HabitParticipationSchema'
@@ -12,31 +12,27 @@ export async function GET(req: NextRequest) {
   Discover Page
   */
   try {
-    await connecttodb();
-    const habits = await HabitModel.find({privatehabit:false});
+    await connecttodb()
+    const habits = await HabitModel.find({ privatehabit: false })
     return NextResponse.json(
-      { message: "Habits retrieved", habits: habits },
+      { message: 'Habits retrieved', habits: habits },
       { status: 200 }
-    );
+    )
   } catch (err) {
     return NextResponse.json(
-      { message: "Error retrieving habits", error: err },
+      { message: 'Error retrieving habits', error: err },
       { status: 500 }
-    );
+    )
   }
 }
 
 export async function POST(req: NextRequest) {
-  /*
-  POST ---> create habit
-  Create Habit Page
-  */
   try {
     await connecttodb()
 
     const data = await req.json()
-    const userid=data.userid;
-    
+    const userid = data.userid
+
     const {
       title,
       description,
@@ -48,7 +44,7 @@ export async function POST(req: NextRequest) {
       proof_of_validation
     } = data
 
-    if (!title || !startDate || !noOfDays || !entryPrize ) {
+    if (!title || !startDate || !noOfDays || !entryPrize) {
       return NextResponse.json(
         { message: 'Missing required fields' },
         { status: 400 }
@@ -56,8 +52,19 @@ export async function POST(req: NextRequest) {
     }
 
     const habitId = uuidv4()
-    const endDate = new Date(startDate)
+
+    const startDateObj = new Date(startDate)
+    if (isNaN(startDateObj.getTime())) {
+      return NextResponse.json(
+        { message: 'Invalid startDate' },
+        { status: 400 }
+      )
+    }
+
+    const endDate = new Date(startDateObj.getTime())
     endDate.setDate(endDate.getDate() + noOfDays)
+
+    console.log(`Start Date: ${startDateObj}, End Date: ${endDate}`)
 
     const baseHabitData = {
       habitid: habitId,
@@ -66,7 +73,7 @@ export async function POST(req: NextRequest) {
       creator: userid,
       participants: [userid],
       entryPrize,
-      startDate,
+      startDate: startDateObj,
       noOfDays,
       endDate,
       maxpartipants,
@@ -74,22 +81,22 @@ export async function POST(req: NextRequest) {
       proof_of_validation
     }
 
-    let inviteCodeGenerated = OtpGenerator.generate(6, {
-      upperCaseAlphabets: false,
-      lowerCaseAlphabets: false,
-      specialChars: false
+    let inviteCodeGenerated = privatehabit
+      ? OtpGenerator.generate(6, {
+          upperCaseAlphabets: false,
+          lowerCaseAlphabets: false,
+          specialChars: false
+        })
+      : null
+
+    console.log('Invite Code:', inviteCodeGenerated)
+
+    const habit = new HabitModel({
+      ...baseHabitData,
+      ...(privatehabit && { invite_code: inviteCodeGenerated })
     })
 
-    console.log('inviteCodeGenerated:', inviteCodeGenerated)
-    const habit = new HabitModel(
-      privatehabit
-        ? {
-            ...baseHabitData,
-            invite_code: inviteCodeGenerated
-          }
-        : baseHabitData
-    )
-
+    // Find the user
     const user = await UserModel.findOne({ userid: userid })
     if (!user) {
       console.log('User Not Found:', userid)
@@ -100,9 +107,9 @@ export async function POST(req: NextRequest) {
     await user.save()
 
     const habitParticipant = new HabitParticipationModel({
-      userId:userid,
+      userId: userid,
       habitId,
-      join_date: new Date(startDate),
+      join_date: startDateObj,
       status: 'current',
       totalDays: noOfDays
     })
