@@ -14,10 +14,9 @@ interface MyHabitsCardProps
   HabitDesc: string;
   id: string;
   noofparticipants: number;
-  privateHabit?: boolean;
+  privatehabit?: boolean;
   entryPrize: string;
   invite_code : number;
-  privatehabit : boolean;
 }
 
 const MyHabitsCardVariants = cva(
@@ -48,11 +47,9 @@ const MyHabitsCard: FC<MyHabitsCardProps> = ({
   HabitDesc,
   noofparticipants,
   id,
-  privateHabit,
+  privatehabit,
   entryPrize,
   invite_code,
-  privatehabit,
-
   ...props
 }) => {
   return (
@@ -62,7 +59,7 @@ const MyHabitsCard: FC<MyHabitsCardProps> = ({
     >
       <div className="flex gap-1 items-baseline justify-between">
         <h2 className="text-xl  font-bold mb-2">{HabitTitle}</h2>
-        {privateHabit && <Lock className="h-4 w-4 text-amber-500" />}
+        {privatehabit && <Lock className="h-4 w-4 text-amber-500" />}
       </div>
 
       <p className="text-sm text-foreground/70">
@@ -72,7 +69,7 @@ const MyHabitsCard: FC<MyHabitsCardProps> = ({
             : HabitDesc)}
       </p>
       <p>
-        {privateHabit && (
+        {privatehabit && (
           <span className="text-xs text-foreground">
             Invite Code: {invite_code}
           </span>

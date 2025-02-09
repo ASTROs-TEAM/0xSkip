@@ -82,7 +82,8 @@ const page = () => {
     }
 
     try {
-      console.log("Submitting data:", {
+      console.log('Submitting data:', {
+        // @ts-ignore
         userid: session?.userid,
         title: habitName,
         description,
@@ -91,10 +92,11 @@ const page = () => {
         noOfDays: duration,
         maxparticipants: maxParticipants,
         privatehabit: privateHabit,
-        proofOfValidation,
-      });
+        proofOfValidation
+      })
 
-      const res = await axios.post("/api/habit", {
+      const res = await axios.post('/api/habit', {
+        // @ts-ignore
         userid: session?.userid,
         title: habitName,
         description,
@@ -103,8 +105,8 @@ const page = () => {
         noOfDays: duration,
         maxparticipants: maxParticipants,
         privatehabit: privateHabit,
-        proof_of_validation: proofOfValidation,
-      });
+        proof_of_validation: proofOfValidation
+      })
 
       if (res.status === 201 || res.status === 200) {
         toast.success("Habit created successfully");
