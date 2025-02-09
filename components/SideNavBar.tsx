@@ -16,6 +16,7 @@ import explorelight from '../app/explore_light.svg'
 import moneybaglight from '../app/moneybag_light.svg'
 import targetlight from '../app/target_light.svg'
 import createlight from '../app/create_light.svg'
+import { SquareCheckBig } from 'lucide-react'
 
 const SideNavBar = () => {
   const { theme } = useTheme()
@@ -26,12 +27,14 @@ const SideNavBar = () => {
     { title: 'My Habits', icon: myhabits, href: '/dashboard/my-habits' },
     { title: 'Explore Habits', icon: explorehabits, href: '/dashboard/explore-habits' },
     { title: 'My Claim', icon: claim, href: '/dashboard/my-claims' },
-    { title: 'Create New Habit', icon: createhabit, href: '/dashboard/create-new-habit' }
+    { title: 'Create New Habit', icon: createhabit, href: '/dashboard/create-new-habit' },
+    { title: 'Completed Habit', icon: explorehabits, href: '/dashboard/completed-habits' }
   ] : [
     { title: 'My Habits', icon: explorelight, href: '/dashboard/my-habits' },
     { title: 'Explore Habits', icon: targetlight, href: '/dashboard/explore-habits' },
     { title: 'My Claim', icon: moneybaglight, href: '/dashboard/my-claims' },
-    { title: 'Create New Habit', icon: createlight, href: '/dashboard/create-new-habit' }
+    { title: 'Create New Habit', icon: createlight, href: '/dashboard/create-new-habit' },
+    { title: 'Completed Habit', icon: targetlight, href: '/dashboard/completed-habits' }
   ]
 
   return (

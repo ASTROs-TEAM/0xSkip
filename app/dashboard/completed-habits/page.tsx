@@ -26,7 +26,6 @@ const page = () => {
 
   const { data: session } = useSession();
   const userid = session?.userid;
-  console.log("userid", userid);
   useEffect(() => {
     const fetchHabits = async () => {
       if (!userid) return;
@@ -71,7 +70,7 @@ const page = () => {
     <section className="grid grid-cols-[65%_35%]">
       <div className="flex flex-col text-foreground h-full overflow-y-auto py-6 px-4">
         <div className="my-1 text-foreground/80">
-          <h1 className="text-4xl font-bold">Your Habits</h1>
+          <h1 className="text-4xl font-bold">Completed Habits</h1>
         </div>
         <div className="flex gap-2 mb-4">
           <Input
@@ -104,8 +103,8 @@ const page = () => {
                   return;
                 }
 
-                // // if habit completed
-                if (item?.completionStatus) {
+                // // if  habit not completed
+                if (item && !item?.completionStatus) {
                   console.log(item.title);
                   return;
                 }
