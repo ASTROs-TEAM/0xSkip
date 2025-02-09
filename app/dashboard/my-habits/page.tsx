@@ -30,10 +30,6 @@ const page = () => {
   // @ts-ignore
   const userid = session?.userid
   console.log('userid', userid)
-  const { data: session } = useSession()
-  // @ts-ignore
-  const userid = session?.userid
-  console.log('userid', userid)
   useEffect(() => {
     const fetchHabits = async () => {
       if (!userid) return
