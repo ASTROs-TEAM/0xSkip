@@ -16,6 +16,8 @@ const page = () => {
     participants: Array<string>;
     entryPrize: string;
     startDate: string;
+    privatehabit: boolean;
+    invite_code: number;
     completionStatus: boolean;
   }
 
@@ -55,6 +57,9 @@ const page = () => {
 
     fetchHabits();
   }, [userid]);
+
+  console.log("myhabits", myhabits);
+ 
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
@@ -113,11 +118,13 @@ const page = () => {
                 return (
                   <MyHabitsCard
                     key={index}
-                    id={item?.habitid}
-                    HabitTitle={item?.title}
-                    HabitDesc={item?.description}
-                    noofparticipants={item?.participants.length}
-                    entryPrize={item?.entryPrize}
+                    id={item.habitid}
+                    HabitTitle={item.title}
+                    HabitDesc={item.description}
+                    noofparticipants={item.participants.length}
+                    entryPrize={item.entryPrize}
+                    privateHabit={item.privatehabit}
+                    invite_code = {item.invite_code}
                   />
                 );
               })

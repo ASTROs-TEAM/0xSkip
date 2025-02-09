@@ -16,6 +16,8 @@ interface MyHabitsCardProps
   noofparticipants: number;
   privateHabit?: boolean;
   entryPrize: string;
+  invite_code : number;
+  privatehabit : boolean;
 }
 
 const MyHabitsCardVariants = cva(
@@ -48,6 +50,8 @@ const MyHabitsCard: FC<MyHabitsCardProps> = ({
   id,
   privateHabit,
   entryPrize,
+  invite_code,
+  privatehabit,
 
   ...props
 }) => {
@@ -66,6 +70,13 @@ const MyHabitsCard: FC<MyHabitsCardProps> = ({
           (HabitDesc.length > 100
             ? HabitDesc.slice(0, 100) + "..."
             : HabitDesc)}
+      </p>
+      <p>
+        {privateHabit && (
+          <span className="text-xs text-foreground">
+            Invite Code: {invite_code}
+          </span>
+        )}
       </p>
       <div className="flex items-center justify-between mt-3">
         <div className="flex items-center gap-2 text-gray-400">
