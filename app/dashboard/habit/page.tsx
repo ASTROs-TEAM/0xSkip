@@ -36,30 +36,30 @@ const page = () => {
   const habitid = "e54ee2f4-abb1-41c0-b680-902c086de976";
 
   const handleProgressAdd = async () => {
+    // @ts-ignore
     if (!session?.userid) {
-      console.error('User not logged in');
-      return;
+      console.error('User not logged in')
+      return
     }
 
-    const { userid } = session; 
-
-   
+    // @ts-ignore
+    const { userid } = session
 
     try {
       const response = await axios.post('/api/progress', {
         habitid,
         userid,
         progress,
-        proof_imgs: proofOfWork,
-      });
+        proof_imgs: proofOfWork
+      })
 
       if (response.status === 200) {
-        console.log('Progress added successfully:', response.data);
+        console.log('Progress added successfully:', response.data)
       } else {
-        console.error('Error adding progress:', response.data);
+        console.error('Error adding progress:', response.data)
       }
     } catch (error) {
-      console.error('Error during API call:', error);
+      console.error('Error during API call:', error)
     }
   };
 

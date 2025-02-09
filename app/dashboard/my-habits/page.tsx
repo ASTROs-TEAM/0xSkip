@@ -10,109 +10,107 @@ import { Loader2 } from "lucide-react";
 
 const page = () => {
   interface Habit {
-    habitid: string;
-    title: string;
-    description: string;
-    participants: Array<string>;
-    entryPrize: string;
-    startDate: string;
-    privatehabit: boolean;
-    invite_code: number;
-    completionStatus: boolean;
+    habitid: string
+    title: string
+    description: string
+    participants: Array<string>
+    entryPrize: string
+    startDate: string
+    privatehabit: boolean
+    invite_code: number
+    completionStatus: boolean
   }
 
-  const [myhabits, setmyHabits] = useState<Habit[]>([]);
-  const [searchText, setSearchText] = useState("");
-  const [filteredHabits, setFilteredHabits] = useState<Habit[]>([]);
-  const [Loading, setLoading] = useState(true);
+  const [myhabits, setmyHabits] = useState<Habit[]>([])
+  const [searchText, setSearchText] = useState('')
+  const [filteredHabits, setFilteredHabits] = useState<Habit[]>([])
+  const [Loading, setLoading] = useState(true)
 
-  const { data: session } = useSession();
-  const userid = session?.userid;
-  console.log("userid", userid);
+  const { data: session } = useSession()
+  // @ts-ignore
+  const userid = session?.userid
+  console.log('userid', userid)
   useEffect(() => {
     const fetchHabits = async () => {
-      if (!userid) return;
+      if (!userid) return
       try {
-        setLoading(true);
-        const res = await fetch(`/api/user/${userid}`);
-        const data = await res.json();
-        console.log(data);
-        const currentHabits = data.user.current_habits || [];
+        setLoading(true)
+        const res = await fetch(`/api/user/${userid}`)
+        const data = await res.json()
+        console.log(data)
+        const currentHabits = data.user.current_habits || []
 
         const detailedHabits = await Promise.all(
           currentHabits.map(async (habitid: string) => {
-            const habitRes = await fetch(`/api/habit/${habitid}`);
-            const habitData = await habitRes.json();
-            return habitData.habit;
+            const habitRes = await fetch(`/api/habit/${habitid}`)
+            const habitData = await habitRes.json()
+            return habitData.habit
           })
-        );
-        setmyHabits(detailedHabits);
-        setFilteredHabits(detailedHabits);
+        )
+        setmyHabits(detailedHabits)
+        setFilteredHabits(detailedHabits)
       } catch (err) {
-        console.error("Error fetching habits:", err);
+        console.error('Error fetching habits:', err)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchHabits();
-  }, [userid]);
+    fetchHabits()
+  }, [userid])
 
-  console.log("myhabits", myhabits);
- 
+  console.log('myhabits', myhabits)
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value);
-  };
+    setSearchText(e.target.value)
+  }
 
   const filteringhabit = () => {
     const filteredData = myhabits.filter((habit) =>
       habit.title.toLowerCase().includes(searchText.toLowerCase())
-    );
-    setFilteredHabits(filteredData);
-  };
+    )
+    setFilteredHabits(filteredData)
+  }
 
   return (
-    <section className="grid grid-cols-[65%_35%]">
-      <div className="flex flex-col text-foreground h-full overflow-y-auto py-6 px-4">
-        <div className="my-1 text-foreground/80">
-          <h1 className="text-4xl font-bold">Your Habits</h1>
+    <section className='grid grid-cols-[65%_35%]'>
+      <div className='flex flex-col text-foreground h-full overflow-y-auto py-6 px-4'>
+        <div className='my-1 text-foreground/80'>
+          <h1 className='text-4xl font-bold'>Your Habits</h1>
         </div>
-        <div className="flex gap-2 mb-4">
+        <div className='flex gap-2 mb-4'>
           <Input
-            placeholder="Search Habits"
-            className="w-full sm:w-[500px]"
+            placeholder='Search Habits'
+            className='w-full sm:w-[500px]'
             onChange={handleSearch}
             value={searchText}
           />
-          <Button className="w-full sm:w-auto" onClick={filteringhabit}>
+          <Button className='w-full sm:w-auto' onClick={filteringhabit}>
             Search
           </Button>
         </div>
         {Loading ? (
-          <div className="flex justify-center items-center h-32">
-            <Loader2 className="w-10 h-10 animate-spin text-tertiary" />
+          <div className='flex justify-center items-center h-32'>
+            <Loader2 className='w-10 h-10 animate-spin text-tertiary' />
           </div>
         ) : (
-          <div className="flex flex-col gap-1 p-2">
+          <div className='flex flex-col gap-1 p-2'>
             {filteredHabits.length > 0 ? (
-              filteredHabits && 
+              filteredHabits &&
               filteredHabits.map((item, index) => {
-
                 // if habit's start date is crossed
                 if (
                   new Date(item?.startDate).toDateString() >
                   new Date().toDateString()
                 ) {
-                  
-                  console.log("start",item.title);
-                  return;
+                  console.log('start', item.title)
+                  return
                 }
 
-                // // if habit completed
+                // if habit completed
                 if (item?.completionStatus) {
-                  console.log(item.title);
-                  return;
+                  console.log(item.title)
+                  return
                 }
 
                 return (
@@ -123,10 +121,10 @@ const page = () => {
                     HabitDesc={item.description}
                     noofparticipants={item.participants.length}
                     entryPrize={item.entryPrize}
-                    privateHabit={item.privatehabit}
-                    invite_code = {item.invite_code}
+                    privatehabit={item.privatehabit}
+                    invite_code={item.invite_code}
                   />
-                );
+                )
               })
             ) : (
               <p>No habits found</p>
@@ -136,7 +134,7 @@ const page = () => {
       </div>
       <RightPanel />
     </section>
-  );
+  )
 };
 
 export default page;
