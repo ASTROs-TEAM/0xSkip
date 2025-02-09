@@ -1,7 +1,7 @@
 'use client'
 import { Button } from '@/components/ui/button'
-import { useSession } from 'next-auth/react';
-import axios from 'axios';
+import { useSession } from 'next-auth/react'
+import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
@@ -24,46 +24,44 @@ import ImageUploader from '@/components/ImageUploader'
 import { Badge } from '@/components/ui/badge'
 
 const page = () => {
-  const { data: session } = useSession();
-  
-  const [progress, setProgress] = useState("");
-  const [proofOfWork, setProofOfWork] = useState<Array<String>>(['']);
-  
-  useEffect(() => {
-    console.log('Proof of work', proofOfWork);
-  }, [proofOfWork]);
+  const { data: session } = useSession()
 
-  const habitid = "e54ee2f4-abb1-41c0-b680-902c086de976";
+  const [progress, setProgress] = useState('')
+  const [proofOfWork, setProofOfWork] = useState<Array<String>>([''])
+
+  useEffect(() => {
+    console.log('Proof of work', proofOfWork)
+  }, [proofOfWork])
+
+  const habitid = 'e54ee2f4-abb1-41c0-b680-902c086de976'
 
   const handleProgressAdd = async () => {
     // @ts-ignore
     if (!session?.userid) {
-      console.error('User not logged in');
-      return;
+      console.error('User not logged in')
+      return
     }
-    
-    // @ts-ignore
-    const { userid } = session; 
 
-   
+    // @ts-ignore
+    const { userid } = session
 
     try {
       const response = await axios.post('/api/progress', {
         habitid,
         userid,
         progress,
-        proof_imgs: proofOfWork,
-      });
+        proof_imgs: proofOfWork
+      })
 
       if (response.status === 200) {
-        console.log('Progress added successfully:', response.data);
+        console.log('Progress added successfully:', response.data)
       } else {
-        console.error('Error adding progress:', response.data);
+        console.error('Error adding progress:', response.data)
       }
     } catch (error) {
-      console.error('Error during API call:', error);
+      console.error('Error during API call:', error)
     }
-  };
+  }
 
   return (
     <div>
@@ -86,14 +84,19 @@ const page = () => {
             <DialogHeader>
               <DialogTitle className='text-2xl'>Progress</DialogTitle>
               <DialogDescription className='text-md text-foreground'>
-                <Textarea placeholder='Enter your progress here' onChange={(e) => setProgress(e.target.value)} />
+                <Textarea
+                  placeholder='Enter your progress here'
+                  onChange={(e) => setProgress(e.target.value)}
+                />
               </DialogDescription>
             </DialogHeader>
             <div className='w-full'>
               <DialogTitle className='text-2xl'>Proof of Work</DialogTitle>
               <ImageUploader setFunction={setProofOfWork} />
             </div>
-            <Button className='w-full mt-4' onClick={handleProgressAdd}>Submit</Button>
+            <Button className='w-full mt-4' onClick={handleProgressAdd}>
+              Submit
+            </Button>
           </DialogContent>
         </Dialog>
       </div>
@@ -139,7 +142,7 @@ const page = () => {
                         </DialogTitle>
                         <Carousel>
                           <CarouselContent>
-                            {[ 
+                            {[
                               'https://firebasestorage.googleapis.com/v0/b/photo-management-app-17909.appspot.com/o/xora%2Fmusic-concert.jpg?alt=media&token=b9959dd3-2aa2-431a-a843-d948d952c095',
                               'https://firebasestorage.googleapis.com/v0/b/photo-management-app-17909.appspot.com/o/xora%2Ftech-conf.jpg?alt=media&token=a89b25a5-86ba-49a3-8f2d-f3b00165d17d',
                               'https://firebasestorage.googleapis.com/v0/b/photo-management-app-17909.appspot.com/o/xora%2Fart-exhibition.jpg?alt=media&token=e583f0ff-6779-41a9-b30b-8e3641294dab'
@@ -163,10 +166,7 @@ const page = () => {
                     </DialogContent>
                   </Dialog>
 
-                  <Button
-                    variant={'outline'}
-                    className='w-max border-tertiary'
-                  >
+                  <Button variant={'outline'} className='w-max border-tertiary'>
                     Validate
                   </Button>
                 </div>
@@ -240,7 +240,7 @@ const page = () => {
         </Tabs>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default page;
+export default page

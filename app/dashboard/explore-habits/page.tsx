@@ -79,6 +79,7 @@ const Page = () => {
     try {
       const res = await axios.patch('/api/join-by-invite', {
         invite_code: inviteCode,
+        // @ts-ignore
         userid: session?.userid
       })
       toast(res.data.message || 'Successfully joined the habit.')
