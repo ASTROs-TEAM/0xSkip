@@ -25,16 +25,16 @@ const page = () => {
   const [searchText, setSearchText] = useState('')
   const [filteredHabits, setFilteredHabits] = useState<Habit[]>([])
   const [Loading, setLoading] = useState(true)
-
   const { data: session } = useSession()
-  // @ts-ignore
-  const userid = session?.userid
+
+  if (typeof document === 'undefined') return
+  
   useEffect(() => {
     const fetchHabits = async () => {
-      if (!userid) return
       try {
         setLoading(true)
-        const res = await fetch(`/api/user/${userid}`)
+        // @ts-ignore
+        const res = await fetch(`/api/user/${session?.userid}`)
         const data = await res.json()
         console.log(data)
         const currentHabits = data.user.current_habits || []
@@ -55,8 +55,10 @@ const page = () => {
       }
     }
 
-    fetchHabits()
-  }, [userid])
+    if (typeof document !== 'undefined') {
+      fetchHabits()
+    }
+  }, [])
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value)

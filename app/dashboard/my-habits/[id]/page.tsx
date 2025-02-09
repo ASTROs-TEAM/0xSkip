@@ -36,7 +36,6 @@ const page = ({ params }: any) => {
   const [validationStatus, setValidationStatus] = useState<boolean>(false)
   const [Loading, setLoading] = useState<boolean>(true)
 
-  const router = useRouter()
 
   // @ts-ignore
   let userid = session?.userid

@@ -36,6 +36,7 @@ const Page = () => {
   const [Loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (typeof document === 'undefined') return 
     const fetchHabits = async () => {
       try {
         setLoading(true)
