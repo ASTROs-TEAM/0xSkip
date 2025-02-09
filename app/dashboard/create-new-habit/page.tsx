@@ -1,14 +1,12 @@
-'use client'
-import React, { useState } from 'react'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import axios from 'axios'
-import { Switch } from '@/components/ui/switch'
-import { useRouter } from 'next/navigation'
-import { useSession } from 'next-auth/react'
-import { toast } from "sonner"
-
-
+"use client";
+import React, { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import axios from "axios";
+import { Switch } from "@/components/ui/switch";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { toast } from "sonner";
 
 const page = () => {
   const router = useRouter();
@@ -79,12 +77,10 @@ const page = () => {
       !maxParticipants ||
       !proofOfValidation
     ) {
-      console.log("toast reached")
-     return toast("Please  fill the required fields")
-
-      
+      console.log("toast reached");
+      return toast("Please  fill the required fields");
     }
-  
+
     try {
       console.log("Submitting data:", {
         userid: session?.userid,
@@ -97,7 +93,7 @@ const page = () => {
         privatehabit: privateHabit,
         proofOfValidation,
       });
-  
+
       const res = await axios.post("/api/habit", {
         userid: session?.userid,
         title: habitName,
@@ -107,16 +103,16 @@ const page = () => {
         noOfDays: duration,
         maxparticipants: maxParticipants,
         privatehabit: privateHabit,
-        proof_of_validation : proofOfValidation,
+        proof_of_validation: proofOfValidation,
       });
-  
+
       if (res.status === 201 || res.status === 200) {
-        alert("Habit created successfully");
+        toast.success("Habit created successfully");
         router.push("/dashboard/my-habits");
       }
     } catch (err: any) {
       console.error("Error creating habit:", err.response?.data || err.message);
-      alert("Failed to create habit. Please try again later.");
+      toast.error("Failed to create habit. Please try again later.");
     }
   };
   return (
@@ -162,7 +158,7 @@ const page = () => {
         <div>
           <label className="text-foreground/90">Proof of Validation</label>
           <textarea
-            className="rounded-md w-full text-foreground font-normal bg-black/10 p-2 border-2 border-foreground/10"
+            className="rounded-md w-full text-foreground font-normal bg-background p-2 border-2 border-foreground/10"
             placeholder="Enter proof of validation"
             onChange={(e) => setProofOfValidation(e.target.value)}
             value={proofOfValidation}
