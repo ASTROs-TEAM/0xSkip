@@ -56,6 +56,7 @@ const Page = ({ params }: any) => {
         const body = {
           habitid: id,
           join_date: Date.now(),
+          // @ts-ignore
           userid: session?.userid
         }
 
