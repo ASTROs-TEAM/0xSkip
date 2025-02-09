@@ -13,7 +13,7 @@ const badgeVariants = cva(
         destructive:
           'border-transparent bg-destructive text-destructive-foreground shadow ',
         outline: 'text-foreground',
-        validated:+
+        validated:
           'border-tertiary/70 bg-tertiary/05 backdrop-blur-xl text-tertiary shadow',
         pending:
           'border-blue-600 bg-background/80 backdrop-blur-xl text-blue-600 shadow',
