@@ -17,6 +17,8 @@ const page = () => {
     entryPrize: string;
     startDate: string;
     completionStatus: boolean;
+    privatehabit: boolean;
+    invite_code: number
   }
 
   const [myhabits, setmyHabits] = useState<Habit[]>([]);
@@ -104,7 +106,7 @@ const page = () => {
                   return;
                 }
 
-                // // if  habit not completed
+                // if  habit not completed
                 if (item && !item?.completionStatus) {
                   console.log(item.title);
                   return;
@@ -118,6 +120,8 @@ const page = () => {
                     HabitDesc={item?.description}
                     noofparticipants={item?.participants.length}
                     entryPrize={item?.entryPrize}
+                    privateHabit={item?.privatehabit}
+                    invite_code={item?.invite_code}
                   />
                 );
               })

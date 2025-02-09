@@ -36,11 +36,13 @@ const page = () => {
   const habitid = "e54ee2f4-abb1-41c0-b680-902c086de976";
 
   const handleProgressAdd = async () => {
+    // @ts-ignore
     if (!session?.userid) {
       console.error('User not logged in');
       return;
     }
-
+    
+    // @ts-ignore
     const { userid } = session; 
 
    

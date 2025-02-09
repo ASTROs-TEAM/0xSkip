@@ -5,7 +5,7 @@ import { toast } from "sonner";
 const ImageUploader = ({
   setFunction,
 }: {
-  setFunction: React.Dispatch<React.SetStateAction<string[]>>;
+  setFunction: React.Dispatch<React.SetStateAction<string[]>> | any;
 }) => {
   async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
     if (!e.target.files) return;
@@ -21,7 +21,7 @@ const ImageUploader = ({
         const response = await uploadToCloudinary(formData);
         toast.dismiss(toastId); 
       if (response.success) {
-        setFunction((prevImages) => [...prevImages, ...response.results]);
+        setFunction((prevImages : any) => [...prevImages, ...response.results]);
         toast.success("Uploaded Successfully",{id: toastId});
       } else {
         toast.error("Upload failed");

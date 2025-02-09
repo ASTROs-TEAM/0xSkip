@@ -17,7 +17,6 @@ interface MyHabitsCardProps
   privateHabit?: boolean;
   entryPrize: string;
   invite_code : number;
-  privatehabit : boolean;
 }
 
 const MyHabitsCardVariants = cva(
@@ -51,8 +50,6 @@ const MyHabitsCard: FC<MyHabitsCardProps> = ({
   privateHabit,
   entryPrize,
   invite_code,
-  privatehabit,
-
   ...props
 }) => {
   return (

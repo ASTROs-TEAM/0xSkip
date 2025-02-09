@@ -27,6 +27,7 @@ const page = () => {
   const [Loading, setLoading] = useState(true);
 
   const { data: session } = useSession();
+  // @ts-ignore
   const userid = session?.userid;
   console.log("userid", userid);
   useEffect(() => {

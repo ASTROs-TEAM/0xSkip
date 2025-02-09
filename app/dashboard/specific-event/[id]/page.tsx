@@ -67,7 +67,7 @@ const Page = ({ params }: any) => {
         return `${res.data.message}`
       }
       // TODO: add users to habit participants
-    } catch (err) {
+    } catch (err : any) {
       console.error('Error joining habit:', err.message || err)
       toast.error(`Error joining habit`)
     }
