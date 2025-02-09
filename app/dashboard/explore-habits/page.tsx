@@ -15,6 +15,7 @@ import axios from 'axios'
 // import { useSession } from 'next-auth/react'
 import { useSession } from 'next-auth/react'
 import { toast } from 'sonner'
+import { Loader2 } from 'lucide-react'
 
 const Page = () => {
   interface Habit {
@@ -32,10 +33,12 @@ const Page = () => {
   const { data: session }: any = useSession()
   const [searchText, setSearchText] = useState('')
   const [filteredHabits, setFilteredHabits] = useState<Habit[]>([])
+  const [Loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchHabits = async () => {
       try {
+        setLoading(true)
         const res = await fetch('/api/habit')
         const data = await res.json()
         setHabits(data.habits || [])
@@ -43,6 +46,8 @@ const Page = () => {
       } catch (err) {
         toast('Error fecthing habits')
         console.error('Error fetching habits:', err)
+      }finally{
+        setLoading(false);
       }
     }
 
@@ -135,9 +140,13 @@ const Page = () => {
           </DialogContent>
         </Dialog>
       </div>
+      {Loading ? (
+        <div className="flex justify-center items-center h-32">
+        <Loader2 className="w-10 h-10 animate-spin text-tertiary" />
+      </div>
+      ) : (
       <div className='flex flex-wrap gap-2'>
-        {filteredHabits.length > 0 ? (
-          filteredHabits.map((habit, index) => {
+          {filteredHabits.map((habit, index) => {
             if (
               new Date(habit.startDate).toDateString() >
               new Date().toDateString()
@@ -156,10 +165,9 @@ const Page = () => {
               />
             )
           })
-        ) : (
-          <p className='text-gray-500'>No habits found.</p>
-        )}
+        }
       </div>
+      )}
     </div>
   )
 }

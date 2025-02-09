@@ -6,7 +6,6 @@ import WalletConnect from './WalletConnect'
 import { Button } from './ui/button'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import { redirect, useRouter } from 'next/navigation'
-import { set } from 'mongoose'
 
 const Header = ({ dashboard }: { dashboard?: boolean }) => {
   const router = useRouter()
