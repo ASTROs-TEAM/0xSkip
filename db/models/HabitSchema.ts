@@ -18,6 +18,8 @@ const HabitSchema = new mongoose.Schema({
   privatehabit: { type: Boolean, default: false },
   invite_code: { type: Number, default: null },
   proof_of_validation : { type: String, required: true },
+  completionDate : { type: Date },
+  completionStatus : { type : Boolean,default : false}
 })
 
 const HabitModel = mongoose.models.Habit || mongoose.model('Habit', HabitSchema)

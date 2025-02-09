@@ -156,7 +156,7 @@ const page = ({ params }: any) => {
         <h1 className='text-4xl font-bricolage font-semibold text-center'>
           {habits?.habit?.title}
         </h1>
-        <p className='text-foreground/60 text-center font-normal w-[60%] mx-auto mt-4 leading-snug'>
+        <p className='text-foreground/80 text-center font-normal w-[60%] mx-auto mt-4 leading-snug'>
           {habits?.habit?.description}
         </p>
       </div>
@@ -166,6 +166,7 @@ const page = ({ params }: any) => {
             <Button
               className='w-max bg-tertiary hover:bg-tertiary/90 text-white'
               disabled={validationStatus}
+              // cursor={validationStatus ? 'not-allowed' : 'pointer'}
             >
               {validationStatus ? 'Progress Updated' : 'Add Progress'}
             </Button>
@@ -237,7 +238,7 @@ const page = ({ params }: any) => {
                         <p>{validation?.userid?.fullname}</p>
                         <Badge
                           variant={validation?.validation_status}
-                          className='rounded-full h-4 '
+                          className='rounded-full h-4 p-3'
                         >
                           {validation?.validation_status.toUpperCase()}
                         </Badge>
@@ -249,10 +250,10 @@ const page = ({ params }: any) => {
                           </DialogTrigger>
                           <DialogContent className='p-8'>
                             <DialogHeader>
-                              <DialogTitle className='text-2xl'>
+                              <DialogTitle className='text-2xl text-foreground'>
                                 Progress
                               </DialogTitle>
-                              <DialogDescription className='text-md text-foreground'>
+                              <DialogDescription className='text-md text-foreground '>
                                 {validation?.progress}
                               </DialogDescription>
                             </DialogHeader>
@@ -318,7 +319,7 @@ const page = ({ params }: any) => {
                         </p>
                         <Badge
                           variant={validation?.validation_status}
-                          className='rounded-full h-4 '
+                          className='rounded-full h-4 p-3'
                         >
                           {validation?.validation_status.toUpperCase()}
                         </Badge>

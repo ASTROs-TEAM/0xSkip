@@ -16,15 +16,20 @@ const RightPanel = () => {
   }
 
   const tileContent = ({ date, view }: any) => {
+
+    const html = document.querySelector('html')
+   
+
     if (view === 'month') {
       const marked = isDateMarked(date)
       if (marked) {
+       const color =  html?.classList.contains('dark') ? marked.color : "#06c270"
         return (
           <div
             style={{
               width: '6px',
               height: '6px',
-              backgroundColor: marked.color,
+              backgroundColor: color,
               borderRadius: '50%',
               margin: '0 auto',
               marginTop: '2px'
@@ -37,9 +42,9 @@ const RightPanel = () => {
   }
 
   return (
-    <div className='skicky left-0 top-20 p-4 flex flex-col h-[90vh] w-full border-l-[1px] border-white/10 text-foreground'>
+    <div className='skicky left-0 top-20 p-4 flex flex-col h-[90vh] w-full border-l-[1px] border-foreground/15 text-foreground'>
       <Calendar
-        className={'text-black w-full invert p-2 rounded-lg'}
+        className={'text-foreground dark:text-background w-full dark:invert p-2 rounded-lg'}
         value={date}
         onChange={() => {}} // Disable selection change
         onClickDay={() => {}} // Disable day clicks
