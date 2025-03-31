@@ -23,10 +23,16 @@ import { Textarea } from "@/components/ui/textarea";
 import ImageUploader from "@/components/ImageUploader";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { convertDate } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
+
+
+
 const page = ({ params }: any) => {
+
+
+  const { id } = useParams()
   const { data: session }: any = useSession()
   const [progress, setProgress] = useState('')
   const [habits, setHabits] = useState<any>({})
@@ -39,7 +45,7 @@ const page = ({ params }: any) => {
 
   // @ts-ignore
   let userid = session?.userid
-  let habitid = params.id
+  let habitid = id
 
   useEffect(() => {
     console.log('Proof of work:', proofOfWork)
@@ -179,7 +185,7 @@ const page = ({ params }: any) => {
           </div>
           <div className='flex justify-center gap-4'>
             <Dialog>
-              <DialogTrigger disabled={validationStatus}>
+              <DialogTrigger asChild disabled={validationStatus}>
                 <Button
                   className='w-max bg-tertiary hover:bg-tertiary/90 text-white'
                   disabled={validationStatus}
@@ -264,7 +270,7 @@ const page = ({ params }: any) => {
                           </div>
                           <div className='flex gap-2'>
                             <Dialog>
-                              <DialogTrigger>
+                              <DialogTrigger asChild>
                                 <Button>View</Button>
                               </DialogTrigger>
                               <DialogContent className='p-8'>
@@ -329,8 +335,8 @@ const page = ({ params }: any) => {
                   {validationsOfUser.length === 0 ? (
                     <p className='text-center'>Loading..</p>
                   ) : (
-                    validationsOfUser.map((validation: any) => (
-                      <div className='w-[650px] mx-auto bg-foreground/10 px-4 py-2 rounded-lg my-4'>
+                    validationsOfUser.map((validation: any,index:number) => (
+                      <div key={index} className='w-[650px] mx-auto bg-foreground/10 px-4 py-2 rounded-lg my-4'>
                         <div className='w-full h-max flex items-center justify-between '>
                           <div>
                             <p className='text-2xl font-bricolage'>
@@ -345,7 +351,7 @@ const page = ({ params }: any) => {
                           </div>
                           <div className='flex gap-2'>
                             <Dialog>
-                              <DialogTrigger>
+                              <DialogTrigger asChild>
                                 <Button>View</Button>
                               </DialogTrigger>
                               <DialogContent className='p-8'>

@@ -7,13 +7,14 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useSession } from 'next-auth/react'
 import { Loader2 } from 'lucide-react'
+import axios from 'axios'
 
-const page = () => {
+const Page = () => {
   interface Habit {
     habitid: string
     title: string
     description: string
-    participants: Array<string>
+    participants: string[]
     entryPrize: string
     startDate: string
     privatehabit: boolean
@@ -21,26 +22,28 @@ const page = () => {
     completionStatus: boolean
   }
 
-  const [myhabits, setmyHabits] = useState<Habit[]>([])
+  const [myHabits, setMyHabits] = useState<Habit[]>([])
   const [searchText, setSearchText] = useState('')
   const [filteredHabits, setFilteredHabits] = useState<Habit[]>([])
-  const [Loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true)
+  const [isClient, setIsClient] = useState(false) // Prevents SSR issues
 
   const { data: session } = useSession()
 
-    if (typeof document === 'undefined') return
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   useEffect(() => {
+    // @ts-ignore
+    if (!session?.userid || !isClient) return
+
     const fetchHabits = async () => {
-      // @ts-ignore
-      if (!session?.userid) return
       try {
         setLoading(true)
         // @ts-ignore
-        const res = await fetch(`/api/user/${session?.userid}`)
-        const data = await res.json()
-        console.log(data)
-        const currentHabits = data.user.current_habits || []
+        const res = await axios.get(`/api/user/${session?.userid}`)
+        const currentHabits = res.data.user.current_habits || []
 
         const detailedHabits = await Promise.all(
           currentHabits.map(async (habitid: string) => {
@@ -49,8 +52,15 @@ const page = () => {
             return habitData.habit
           })
         )
-        setmyHabits(detailedHabits)
-        setFilteredHabits(detailedHabits)
+
+        // Filter active habits before setting state
+        const activeHabits = detailedHabits.filter(
+          (habit) =>
+            new Date(habit.startDate) <= new Date() && !habit.completionStatus
+        )
+
+        setMyHabits(activeHabits)
+        setFilteredHabits(activeHabits)
       } catch (err) {
         console.error('Error fetching habits:', err)
       } finally {
@@ -58,22 +68,18 @@ const page = () => {
       }
     }
 
-    if (typeof document !== 'undefined') {
-      fetchHabits()
-    }
-  }, [])
+    fetchHabits()
+  }, [session, isClient])
 
-
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearch = (e: any) => {
     setSearchText(e.target.value)
-  }
-
-  const filteringhabit = () => {
-    const filteredData = myhabits.filter((habit) =>
-      habit.title.toLowerCase().includes(searchText.toLowerCase())
+    const filteredData = myHabits.filter((habit) =>
+      habit.title.toLowerCase().includes(e.target.value.toLowerCase())
     )
     setFilteredHabits(filteredData)
   }
+
+  if (!isClient) return null 
 
   return (
     <section className='grid grid-cols-[65%_35%]'>
@@ -88,47 +94,29 @@ const page = () => {
             onChange={handleSearch}
             value={searchText}
           />
-          <Button className='w-full sm:w-auto' onClick={filteringhabit}>
+          <Button className='w-full sm:w-auto' onClick={handleSearch}>
             Search
           </Button>
         </div>
-        {Loading ? (
+        {loading ? (
           <div className='flex justify-center items-center h-32'>
             <Loader2 className='w-10 h-10 animate-spin text-tertiary' />
           </div>
         ) : (
           <div className='flex flex-col gap-1 p-2'>
             {filteredHabits.length > 0 ? (
-              filteredHabits &&
-              filteredHabits.map((item, index) => {
-                // if habit's start date is crossed
-                if (
-                  new Date(item?.startDate).toDateString() >
-                  new Date().toDateString()
-                ) {
-                  console.log('start', item.title)
-                  return
-                }
-
-                // if habit completed
-                if (item?.completionStatus) {
-                  console.log(item.title)
-                  return
-                }
-
-                return (
-                  <MyHabitsCard
-                    key={index}
-                    id={item.habitid}
-                    HabitTitle={item.title}
-                    HabitDesc={item.description}
-                    noofparticipants={item.participants.length}
-                    entryPrize={item.entryPrize}
-                    privatehabit={item.privatehabit}
-                    invite_code={item.invite_code}
-                  />
-                )
-              })
+              filteredHabits.map((item) => (
+                <MyHabitsCard
+                  key={item.habitid}
+                  id={item.habitid}
+                  HabitTitle={item.title}
+                  HabitDesc={item.description}
+                  noofparticipants={item.participants.length}
+                  entryPrize={item.entryPrize}
+                  privatehabit={item.privatehabit}
+                  invite_code={item.invite_code}
+                />
+              ))
             ) : (
               <p>No habits found</p>
             )}
@@ -140,4 +128,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

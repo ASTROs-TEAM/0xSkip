@@ -41,13 +41,13 @@ export default function Home() {
           <p className="text-[80px] leading-tight font-bricolage text-center">
             Never Skip your Habits with
             <span className="font-bold text-tertiary text-[100px]">
-              0x Skip
+              0xSkip
             </span>
           </p>
         </div>
       </div>
 
-      <div className="w-full flex flex-wrap justify-between items-center px-8 py-20">
+      <div className="w-full flex flex-wrap justify-between items-center px-8 py-20 mt-[150px]">
         <div className="w-full md:w-1/2 max-w-[50%] space-y-4">
           <h1 className="text-6xl font-bold text-foreground">
             Explore 0xSkip{" "}

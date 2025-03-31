@@ -14,18 +14,12 @@ import {
 import { Button } from '@/components/ui/button'
 import useSendTransaction from '@/hooks/useSendTransaction'
 import { toast } from 'sonner'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import axios from 'axios'
 import { useSession } from 'next-auth/react'
 
-type Props = {
-  params: {
-    id: string
-  }
-}
-
-const Page = ({ params }: any) => {
-  const { id } = params
+const Page = () => {
+  const { id } = useParams()
   const [name, setname] = useState('')
   const router = useRouter()
   const [habitDetails, setHabitDetails] = useState<any>(null)
@@ -152,7 +146,7 @@ const Page = ({ params }: any) => {
         </p>
         <div className='flex justify-center items-center mt-4'>
           <AlertDialog>
-            <AlertDialogTrigger className='bg-foreground text-black p-2 rounded-lg font-normal'>
+            <AlertDialogTrigger asChild className='bg-foreground text-black p-2 rounded-lg font-normal'>
               Join now
             </AlertDialogTrigger>
             <AlertDialogContent>

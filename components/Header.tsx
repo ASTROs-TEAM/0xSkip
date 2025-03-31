@@ -11,7 +11,7 @@ const Header = ({ dashboard }: { dashboard?: boolean }) => {
   const router = useRouter()
   const { data: session } = useSession()
 
-  const [theme,setTheme] = useState('');
+  const [theme,setTheme] = useState('dark');
 
   const handleSignIn = async () => {
     try {

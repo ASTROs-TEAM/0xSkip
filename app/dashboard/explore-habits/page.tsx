@@ -1,4 +1,9 @@
 'use client'
+
+import { useEffect, useState } from 'react'
+import { useSession } from 'next-auth/react'
+import { toast } from 'sonner'
+import axios from 'axios'
 import { Explorehabits } from '@/components/Explorehabits'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -10,11 +15,6 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog'
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
-// import { useSession } from 'next-auth/react'
-import { useSession } from 'next-auth/react'
-import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
 
 const Page = () => {
@@ -29,26 +29,29 @@ const Page = () => {
 
   const [inviteCode, setInviteCode] = useState('')
   const [habits, setHabits] = useState<Habit[]>([])
-
-  const { data: session }: any = useSession()
   const [searchText, setSearchText] = useState('')
   const [filteredHabits, setFilteredHabits] = useState<Habit[]>([])
-  const [Loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true)
+  const [hydrated, setHydrated] = useState(false) // Track hydration state
+
+  const { data: session, status } = useSession()
 
   useEffect(() => {
-    if (typeof document === 'undefined') return 
+    setHydrated(true)
+  }, [])
+
+  useEffect(() => {
     const fetchHabits = async () => {
       try {
         setLoading(true)
-        const res = await fetch('/api/habit')
-        const data = await res.json()
-        setHabits(data.habits || [])
-        setFilteredHabits(data.habits || [])
+        const res = await axios.get('/api/habit')
+        setHabits(res.data.habits || [])
+        setFilteredHabits(res.data.habits || [])
       } catch (err) {
-        toast('Error fecthing habits')
+        toast('Error fetching habits')
         console.error('Error fetching habits:', err)
-      }finally{
-        setLoading(false);
+      } finally {
+        setLoading(false)
       }
     }
 
@@ -80,19 +83,22 @@ const Page = () => {
     try {
       const res = await axios.patch('/api/join-by-invite', {
         invite_code: inviteCode,
-        // @ts-ignore
-        userid: session?.userid
+        userid: session?.user?.id
       })
       toast(res.data.message || 'Successfully joined the habit.')
       setInviteCode('')
     } catch (err: any) {
       console.error('Error joining habit:', err)
-      if (err.response) {
-        toast(err.response.data.message || 'Failed to join habit.')
-      } else {
-        toast('An unexpected error occurred. Please try again.')
-      }
+      toast(err.response?.data?.message || 'Failed to join habit.')
     }
+  }
+
+  const upcomingHabits = filteredHabits.filter(
+    (habit) => new Date(habit.startDate) > new Date()
+  )
+
+  if (!hydrated) {
+    return null
   }
 
   return (
@@ -116,7 +122,7 @@ const Page = () => {
         </Button>
 
         <Dialog>
-          <DialogTrigger>
+          <DialogTrigger asChild>
             <Button
               variant='outline'
               className='border-tertiary w-full sm:w-auto'
@@ -142,33 +148,27 @@ const Page = () => {
           </DialogContent>
         </Dialog>
       </div>
-      {Loading ? (
-        <div className="flex justify-center items-center h-32">
-        <Loader2 className="w-10 h-10 animate-spin text-tertiary" />
-      </div>
+      {loading ? (
+        <div className='flex justify-center items-center h-32'>
+          <Loader2 className='w-10 h-10 animate-spin text-tertiary' />
+        </div>
       ) : (
-      <div className='flex flex-wrap gap-2'>
-          {filteredHabits.map((habit, index) => {
-            if (
-              new Date(habit.startDate).toDateString() >
-              new Date().toDateString()
-            ) {
-              return
-            }
-
-            return (
+        <div className='flex flex-wrap gap-2'>
+          {upcomingHabits.length > 0 ? (
+            upcomingHabits.map((habit) => (
               <Explorehabits
-                key={index}
+                key={habit.habitid}
                 title={habit.title}
                 description={habit.description}
                 participants={habit.participants.length}
                 entryPrize={habit.entryPrize}
                 habitid={habit.habitid}
               />
-            )
-          })
-        }
-      </div>
+            ))
+          ) : (
+            <p>No upcoming habits found</p>
+          )}
+        </div>
       )}
     </div>
   )
