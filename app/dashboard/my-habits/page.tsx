@@ -56,8 +56,10 @@ const Page = () => {
         // Filter active habits before setting state
         const activeHabits = detailedHabits.filter(
           (habit) =>
-            new Date(habit.startDate) <= new Date() && !habit.completionStatus
+            new Date(habit.startDate) >= new Date() && !habit.completionStatus
         )
+
+        console.log("active Habits" , activeHabits)
 
         setMyHabits(activeHabits)
         setFilteredHabits(activeHabits)
@@ -123,7 +125,7 @@ const Page = () => {
           </div>
         )}
       </div>
-      <RightPanel />
+      {/* <RightPanel /> */}
     </section>
   )
 }

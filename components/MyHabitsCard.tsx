@@ -17,6 +17,7 @@ interface MyHabitsCardProps
   privatehabit?: boolean;
   entryPrize: string;
   invite_code : number;
+  completed? : boolean;
 }
 
 const MyHabitsCardVariants = cva(
@@ -50,6 +51,7 @@ const MyHabitsCard: FC<MyHabitsCardProps> = ({
   privatehabit,
   entryPrize,
   invite_code,
+  completed=false,
   ...props
 }) => {
   return (
@@ -98,13 +100,17 @@ const MyHabitsCard: FC<MyHabitsCardProps> = ({
             <p className="text-foreground/70">{entryPrize}</p>
           </span>
         </div>
-        <Link
-          href={`/dashboard/my-habits/${id}`}
-          className="text-md hover:underline hover:text-tertiary  bg-transparent p-2 rounded-md flex items-center"
-        >
-          Update Progress
-          <ArrowUpRight className="text-tertiary" size={"20px"} />
-        </Link>
+        {
+          !completed && 
+          <Link
+            href={`/dashboard/my-habits/${id}`}
+            className="text-md hover:underline hover:text-tertiary  bg-transparent p-2 rounded-md flex items-center"
+          >
+            Update Progress
+            <ArrowUpRight className="text-tertiary" size={"20px"} />
+          </Link>
+        }
+        
       </div>
     </div>
   );

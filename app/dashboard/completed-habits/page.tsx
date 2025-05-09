@@ -118,6 +118,7 @@ const Page = () => {
                   entryPrize={habit.entryPrize}
                   privatehabit={habit.privatehabit}
                   invite_code={habit.invite_code}
+                  completed={true}
                 />
               ))
             ) : (
@@ -126,7 +127,7 @@ const Page = () => {
           </div>
         )}
       </div>
-      <RightPanel />
+      {/* <RightPanel /> */}
     </section>
   )
 }

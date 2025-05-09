@@ -146,7 +146,7 @@ const Page = () => {
         </p>
         <div className='flex justify-center items-center mt-4'>
           <AlertDialog>
-            <AlertDialogTrigger asChild className='bg-foreground text-black p-2 rounded-lg font-normal'>
+            <AlertDialogTrigger className='bg-foreground text-black p-2 rounded-lg font-normal'>
               Join now
             </AlertDialogTrigger>
             <AlertDialogContent>

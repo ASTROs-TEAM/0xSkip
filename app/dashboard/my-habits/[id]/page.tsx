@@ -206,7 +206,31 @@ const page = ({ params }: any) => {
                 </DialogHeader>
                 <div className='w-full'>
                   <DialogTitle className='text-2xl'>Proof of Work</DialogTitle>
-                  <ImageUploader setFunction={setProofOfWork} />
+                 
+                  {
+                      proofOfWork.length === 0 ? <ImageUploader setFunction={setProofOfWork} /> : (
+                        <Carousel>
+                          <CarouselContent>
+                            {proofOfWork?.map(
+                              (item: any, index: number) => (
+                                <CarouselItem
+                                  key={index}
+                                  className='h-[300px] p-1 m-1 flex-shrink-0'
+                                >
+                                  <img
+                                    src={item}
+                                    alt='proof'
+                                    className='w-full h-full object-cover rounded-lg'
+                                  />
+                                </CarouselItem>
+                              )
+                            )}
+                          </CarouselContent>
+                          <CarouselPrevious />
+                          <CarouselNext />
+                        </Carousel>
+                      )
+                  }
                 </div>
                 <Button className='w-full mt-4' onClick={handleProgressAdd}>
                   Submit
@@ -237,7 +261,7 @@ const page = ({ params }: any) => {
                 <div>
                   {/* // Map this card  */}
                   {validations.length === 0 ? (
-                    <p>Loading..</p>
+                    <p>No validations</p>
                   ) : (
                     validations.map((validation: any) => {
                       if (validation.userid.userid === session?.userid) {
@@ -333,7 +357,7 @@ const page = ({ params }: any) => {
             </div> */}
                 <div className='m-2 my-6'>
                   {validationsOfUser.length === 0 ? (
-                    <p className='text-center'>Loading..</p>
+                    <p className='text-center'>No validations</p>
                   ) : (
                     validationsOfUser.map((validation: any,index:number) => (
                       <div key={index} className='w-[650px] mx-auto bg-foreground/10 px-4 py-2 rounded-lg my-4'>
